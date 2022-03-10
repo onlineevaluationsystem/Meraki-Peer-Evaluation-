@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;?php<br>
+ob_start();<br>
+date_default_timezone_set(&quot;Asia/Manila&quot;);<br>
+<br>
+$action = $_GET[&#39;action&#39;];<br>
+include &#39;admin_class.php&#39;;<br>
+$crud = new Action();<br>
+if($action == &#39;login&#39;){<br>
+&nbsp;&nbsp;&nbsp;$login = $crud&ndash;&gt;login();<br>
+&nbsp;&nbsp;&nbsp;if($login)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $login;<br>
+}<br>
+if($action == &#39;login2&#39;){<br>
+&nbsp;&nbsp;&nbsp;$login = $crud&ndash;&gt;login2();<br>
+&nbsp;&nbsp;&nbsp;if($login)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $login;<br>
+}<br>
+if($action == &#39;logout&#39;){<br>
+&nbsp;&nbsp;&nbsp;$logout = $crud&ndash;&gt;logout();<br>
+&nbsp;&nbsp;&nbsp;if($logout)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $logout;<br>
+}<br>
+if($action == &#39;logout2&#39;){<br>
+&nbsp;&nbsp;&nbsp;$logout = $crud&ndash;&gt;logout2();<br>
+&nbsp;&nbsp;&nbsp;if($logout)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $logout;<br>
+}<br>
+<br>
+if($action == &#39;signup&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;signup();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;save_user&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;save_user();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;update_user&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;update_user();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;delete_user&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;delete_user();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;save_department&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;save_department();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;delete_department&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;delete_department();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;save_designation&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;save_designation();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;delete_designation&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;delete_designation();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;save_employee&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;save_employee();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;delete_employee&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;delete_employee();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;save_evaluator&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;save_evaluator();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;delete_evaluator&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;delete_evaluator();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;save_task&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;save_task();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;delete_task&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;delete_task();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;save_progress&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;save_progress();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;delete_progress&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;delete_progress();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;save_evaluation&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;save_evaluation();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;delete_evaluation&#39;){<br>
+&nbsp;&nbsp;&nbsp;$save = $crud&ndash;&gt;delete_evaluation();<br>
+&nbsp;&nbsp;&nbsp;if($save)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $save;<br>
+}<br>
+if($action == &#39;get_emp_tasks&#39;){<br>
+&nbsp;&nbsp;&nbsp;$get = $crud&ndash;&gt;get_emp_tasks();<br>
+&nbsp;&nbsp;&nbsp;if($get)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $get;<br>
+}<br>
+if($action == &#39;get_progress&#39;){<br>
+&nbsp;&nbsp;&nbsp;$get = $crud&ndash;&gt;get_progress();<br>
+&nbsp;&nbsp;&nbsp;if($get)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $get;<br>
+}<br>
+if($action == &#39;get_report&#39;){<br>
+&nbsp;&nbsp;&nbsp;$get = $crud&ndash;&gt;get_report();<br>
+&nbsp;&nbsp;&nbsp;if($get)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $get;<br>
+}<br>
+ob_end_flush();<br>
+?&gt;</body></html>

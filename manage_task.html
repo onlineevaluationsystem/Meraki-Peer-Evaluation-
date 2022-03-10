@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;?php <br>
+include &#39;db_connect.php&#39;;<br>
+if(isset($_GET[&#39;id&#39;])){<br>
+&nbsp;&nbsp;&nbsp;$qry = $conn&ndash;&gt;query(&quot;SELECT * FROM task_list where id = &quot;.$_GET[&#39;id&#39;])&ndash;&gt;fetch_array();<br>
+&nbsp;&nbsp;&nbsp;foreach($qry as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$$k = $v;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+?&gt;<br>
+&lt;div class=&quot;container&ndash;fluid&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;form action=&quot;&quot; id=&quot;manage&ndash;task&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=&quot;hidden&quot; name=&quot;id&quot; value=&quot;&lt;?php echo isset($id) ? $id : &#39;&#39; ?&gt;&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;col&ndash;lg&ndash;12&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;row&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;col&ndash;md&ndash;5&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;form&ndash;group&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=&quot;&quot;&gt;Task&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=&quot;text&quot; class=&quot;form&ndash;control form&ndash;control&ndash;sm&quot; name=&quot;task&quot; value=&quot;&lt;?php echo isset($task) ? $task : &#39;&#39; ?&gt;&quot; required&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;form&ndash;group&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=&quot;&quot;&gt;Assign To&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;select name=&quot;employee_id&quot; id=&quot;employee_id&quot; class=&quot;form&ndash;control form&ndash;control&ndash;sm&quot; required=&quot;&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value=&quot;&quot;&gt;&lt;/option&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;?php <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$employees = $conn&ndash;&gt;query(&quot;SELECT *,concat(lastname,&#39;, &#39;,firstname,&#39; &#39;,middlename) as name FROM employee_list order by concat(lastname,&#39;, &#39;,firstname,&#39; &#39;,middlename) asc&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while($row=$employees&ndash;&gt;fetch_assoc()):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value=&quot;&lt;?php echo $row[&#39;id&#39;] ?&gt;&quot; &lt;?php echo isset($employee_id) &amp;&amp; $employee_id == $row[&#39;id&#39;] ? &#39;selected&#39; : &#39;&#39; ?&gt;&gt;&lt;?php echo $row[&#39;name&#39;] ?&gt;&lt;/option&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;?php endwhile; ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/select&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;form&ndash;group&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=&quot;&quot;&gt;Due Date&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=&quot;date&quot; class=&quot;form&ndash;control form&ndash;control&ndash;sm&quot; name=&quot;due_date&quot; value=&quot;&lt;?php echo isset($due_date) ? $due_date : date(&quot;Y&ndash;m&ndash;d&quot;) ?&gt;&quot; required&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;col&ndash;md&ndash;7&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;form&ndash;group&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=&quot;&quot;&gt;Description&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;textarea name=&quot;description&quot; id=&quot;&quot; cols=&quot;30&quot; rows=&quot;10&quot; class=&quot;summernote form&ndash;control&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;?php echo isset($description) ? $description : &#39;&#39; ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/textarea&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&lt;/form&gt;<br>
+&lt;/div&gt;<br>
+<br>
+&lt;script&gt;<br>
+&nbsp;&nbsp;&nbsp;$(document).ready(function(){<br>
+<br>
+&nbsp;&nbsp;&nbsp;$(&#39;#employee_id&#39;).select2({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;placeholder:&#39;Please Employee&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width:&#39;100%&#39;<br>
+&nbsp;&nbsp;&nbsp;})<br>
+<br>
+&nbsp;&nbsp;&nbsp;$(&#39;.summernote&#39;).summernote({<br>
+        height: 200,<br>
+        toolbar: [<br>
+            [ &#39;style&#39;, [ &#39;style&#39; ] ],<br>
+            [ &#39;font&#39;, [ &#39;bold&#39;, &#39;italic&#39;, &#39;underline&#39;, &#39;strikethrough&#39;, &#39;superscript&#39;, &#39;subscript&#39;, &#39;clear&#39;] ],<br>
+            [ &#39;fontname&#39;, [ &#39;fontname&#39; ] ],<br>
+            [ &#39;fontsize&#39;, [ &#39;fontsize&#39; ] ],<br>
+            [ &#39;color&#39;, [ &#39;color&#39; ] ],<br>
+            [ &#39;para&#39;, [ &#39;ol&#39;, &#39;ul&#39;, &#39;paragraph&#39;, &#39;height&#39; ] ],<br>
+            [ &#39;table&#39;, [ &#39;table&#39; ] ],<br>
+            [ &#39;view&#39;, [ &#39;undo&#39;, &#39;redo&#39;, &#39;fullscreen&#39;, &#39;codeview&#39;, &#39;help&#39; ] ]<br>
+        ]<br>
+    })<br>
+     })<br>
+    <br>
+    $(&#39;#manage&ndash;task&#39;).submit(function(e){<br>
+    	e.preventDefault()<br>
+    	start_load()<br>
+    	$.ajax({<br>
+    		url:&#39;ajax.php?action=save_task&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data: new FormData($(this)[0]),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    cache: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    contentType: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    processData: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    method: &#39;POST&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    type: &#39;POST&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;success:function(resp){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(resp == 1){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert_toast(&#39;Data successfully saved&#39;,&quot;success&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;location.reload()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},1500)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+    	})<br>
+    })<br>
+&lt;/script&gt;</body></html>

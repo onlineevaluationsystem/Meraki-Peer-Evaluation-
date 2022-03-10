@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;?php <br>
+include(&#39;db_connect.php&#39;);<br>
+session_start();<br>
+if(isset($_GET[&#39;id&#39;])){<br>
+$type = array(&quot;employee_list&quot;,&quot;evaluator_list&quot;,&quot;users&quot;);<br>
+$user = $conn&ndash;&gt;query(&quot;SELECT * FROM {$type[$_SESSION[&#39;login_type&#39;]]} where id =&quot;.$_GET[&#39;id&#39;]);<br>
+foreach($user&ndash;&gt;fetch_array() as $k =&gt;$v){<br>
+&nbsp;&nbsp;&nbsp;$meta[$k] = $v;<br>
+}<br>
+}<br>
+?&gt;<br>
+&lt;div class=&quot;container&ndash;fluid&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;div id=&quot;msg&quot;&gt;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&lt;form action=&quot;&quot; id=&quot;manage&ndash;user&quot;&gt;	<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=&quot;hidden&quot; name=&quot;id&quot; value=&quot;&lt;?php echo isset($meta[&#39;id&#39;]) ? $meta[&#39;id&#39;]: &#39;&#39; ?&gt;&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;form&ndash;group&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=&quot;name&quot;&gt;First Name&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=&quot;text&quot; name=&quot;firstname&quot; id=&quot;firstname&quot; class=&quot;form&ndash;control&quot; value=&quot;&lt;?php echo isset($meta[&#39;firstname&#39;]) ? $meta[&#39;firstname&#39;]: &#39;&#39; ?&gt;&quot; required&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;form&ndash;group&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=&quot;name&quot;&gt;Last Name&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=&quot;text&quot; name=&quot;lastname&quot; id=&quot;lastname&quot; class=&quot;form&ndash;control&quot; value=&quot;&lt;?php echo isset($meta[&#39;lastname&#39;]) ? $meta[&#39;lastname&#39;]: &#39;&#39; ?&gt;&quot; required&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;form&ndash;group&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=&quot;email&quot;&gt;Email&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=&quot;text&quot; name=&quot;email&quot; id=&quot;email&quot; class=&quot;form&ndash;control&quot; value=&quot;&lt;?php echo isset($meta[&#39;email&#39;]) ? $meta[&#39;email&#39;]: &#39;&#39; ?&gt;&quot; required  autocomplete=&quot;off&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;form&ndash;group&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=&quot;password&quot;&gt;Password&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=&quot;password&quot; name=&quot;password&quot; id=&quot;password&quot; class=&quot;form&ndash;control&quot; value=&quot;&quot; autocomplete=&quot;off&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;small&gt;&lt;i&gt;Leave this blank if you dont want to change the password.&lt;/i&gt;&lt;/small&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;form&ndash;group&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=&quot;&quot; class=&quot;control&ndash;label&quot;&gt;Avatar&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;custom&ndash;file&quot;&gt;<br>
+              &lt;input type=&quot;file&quot; class=&quot;custom&ndash;file&ndash;input rounded&ndash;circle&quot; id=&quot;customFile&quot; name=&quot;img&quot; onchange=&quot;displayImg(this,$(this))&quot;&gt;<br>
+              &lt;label class=&quot;custom&ndash;file&ndash;label&quot; for=&quot;customFile&quot;&gt;Choose file&lt;/label&gt;<br>
+            &lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;form&ndash;group d&ndash;flex justify&ndash;content&ndash;center&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;img src=&quot;&lt;?php echo isset($meta[&#39;avatar&#39;]) ? &#39;assets/uploads/&#39;.$meta[&#39;avatar&#39;] :&#39;&#39; ?&gt;&quot; alt=&quot;&quot; id=&quot;cimg&quot; class=&quot;img&ndash;fluid img&ndash;thumbnail&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&lt;/form&gt;<br>
+&lt;/div&gt;<br>
+&lt;style&gt;<br>
+&nbsp;&nbsp;&nbsp;img#cimg{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height: 15vh;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width: 15vh;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;object&ndash;fit: cover;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;border&ndash;radius: 100% 100%;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&lt;/style&gt;<br>
+&lt;script&gt;<br>
+&nbsp;&nbsp;&nbsp;function displayImg(input,_this) {<br>
+&nbsp;&nbsp;&nbsp;    if (input.files &amp;&amp; input.files[0]) {<br>
+&nbsp;&nbsp;&nbsp;        var reader = new FileReader();<br>
+&nbsp;&nbsp;&nbsp;        reader.onload = function (e) {<br>
+&nbsp;&nbsp;&nbsp;        	$(&#39;#cimg&#39;).attr(&#39;src&#39;, e.target.result);<br>
+&nbsp;&nbsp;&nbsp;        }<br>
+<br>
+&nbsp;&nbsp;&nbsp;        reader.readAsDataURL(input.files[0]);<br>
+&nbsp;&nbsp;&nbsp;    }<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;$(&#39;#manage&ndash;user&#39;).submit(function(e){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.preventDefault();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start_load()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$.ajax({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url:&#39;ajax.php?action=update_user&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data: new FormData($(this)[0]),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    cache: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    contentType: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    processData: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    method: &#39;POST&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    type: &#39;POST&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;success:function(resp){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(resp ==1){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert_toast(&quot;Data successfully saved&quot;,&#39;success&#39;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;location.reload()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},1500)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$(&#39;#msg&#39;).html(&#39;&lt;div class=&quot;alert alert&ndash;danger&quot;&gt;Username already exist&lt;/div&gt;&#39;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end_load()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;})<br>
+<br>
+&lt;/script&gt;</body></html>

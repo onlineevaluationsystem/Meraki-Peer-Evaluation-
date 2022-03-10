@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;!&ndash;&ndash; Navbar &ndash;&ndash;&gt;<br>
+  &lt;nav class=&quot;main&ndash;header navbar navbar&ndash;expand navbar&ndash;primary navbar&ndash;dark &quot;&gt;<br>
+    &lt;!&ndash;&ndash; Left navbar links &ndash;&ndash;&gt;<br>
+    &lt;ul class=&quot;navbar&ndash;nav&quot;&gt;<br>
+      &lt;?php if(isset($_SESSION[&#39;login_id&#39;])): ?&gt;<br>
+      &lt;li class=&quot;nav&ndash;item&quot;&gt;<br>
+        &lt;a class=&quot;nav&ndash;link&quot; data&ndash;widget=&quot;pushmenu&quot; href=&quot;&quot; role=&quot;button&quot;&gt;&lt;i class=&quot;fas fa&ndash;bars&quot;&gt;&lt;/i&gt;&lt;/a&gt;<br>
+      &lt;/li&gt;<br>
+    &lt;?php endif; ?&gt;<br>
+      &lt;li&gt;<br>
+        &lt;a class=&quot;nav&ndash;link text&ndash;white&quot;  href=&quot;./&quot; role=&quot;button&quot;&gt; &lt;large&gt;&lt;b&gt;&lt;?php echo $_SESSION[&#39;system&#39;][&#39;name&#39;] ?&gt;&lt;/b&gt;&lt;/large&gt;&lt;/a&gt;<br>
+      &lt;/li&gt;<br>
+    &lt;/ul&gt;<br>
+<br>
+    &lt;ul class=&quot;navbar&ndash;nav ml&ndash;auto&quot;&gt;<br>
+     <br>
+      &lt;li class=&quot;nav&ndash;item&quot;&gt;<br>
+        &lt;a class=&quot;nav&ndash;link&quot; data&ndash;widget=&quot;fullscreen&quot; href=&quot;#&quot; role=&quot;button&quot;&gt;<br>
+          &lt;i class=&quot;fas fa&ndash;expand&ndash;arrows&ndash;alt&quot;&gt;&lt;/i&gt;<br>
+        &lt;/a&gt;<br>
+      &lt;/li&gt;<br>
+     &lt;li class=&quot;nav&ndash;item dropdown&quot;&gt;<br>
+            &lt;a class=&quot;nav&ndash;link&quot;  data&ndash;toggle=&quot;dropdown&quot; aria&ndash;expanded=&quot;true&quot; href=&quot;javascript:void(0)&quot;&gt;<br>
+              &lt;span&gt;<br>
+                &lt;div class=&quot;d&ndash;felx badge&ndash;pill&quot;&gt;<br>
+                  &lt;span class=&quot;&quot;&gt;&lt;img src=&quot;assets/uploads/&lt;?php echo $_SESSION[&#39;login_avatar&#39;] ?&gt;&quot; alt=&quot;&quot; class=&quot;user&ndash;img border &quot;&gt;&lt;/span&gt;<br>
+                  &lt;span&gt;&lt;b&gt;&lt;?php echo ucwords($_SESSION[&#39;login_firstname&#39;]) ?&gt;&lt;/b&gt;&lt;/span&gt;<br>
+                  &lt;span class=&quot;fa fa&ndash;angle&ndash;down ml&ndash;2&quot;&gt;&lt;/span&gt;<br>
+                &lt;/div&gt;<br>
+              &lt;/span&gt;<br>
+            &lt;/a&gt;<br>
+            &lt;div class=&quot;dropdown&ndash;menu&quot; aria&ndash;labelledby=&quot;account_settings&quot; style=&quot;left: &ndash;2.5em;&quot;&gt;<br>
+              &lt;a class=&quot;dropdown&ndash;item&quot; href=&quot;javascript:void(0)&quot; id=&quot;manage_account&quot;&gt;&lt;i class=&quot;fa fa&ndash;cog&quot;&gt;&lt;/i&gt; Manage Account&lt;/a&gt;<br>
+              &lt;a class=&quot;dropdown&ndash;item&quot; href=&quot;ajax.php?action=logout&quot;&gt;&lt;i class=&quot;fa fa&ndash;power&ndash;off&quot;&gt;&lt;/i&gt; Logout&lt;/a&gt;<br>
+            &lt;/div&gt;<br>
+      &lt;/li&gt;<br>
+    &lt;/ul&gt;<br>
+  &lt;/nav&gt;<br>
+  &lt;!&ndash;&ndash; /.navbar &ndash;&ndash;&gt;<br>
+  &lt;script&gt;<br>
+     $(&#39;#manage_account&#39;).click(function(){<br>
+        uni_modal(&#39;Manage Account&#39;,&#39;manage_user.php?id=&lt;?php echo $_SESSION[&#39;login_id&#39;] ?&gt;&#39;)<br>
+      })<br>
+  &lt;/script&gt;<br>
+  &lt;style&gt;<br>
+    .user&ndash;img {<br>
+        border&ndash;radius: 50%;<br>
+        height: 25px;<br>
+        width: 25px;<br>
+        object&ndash;fit: cover;<br>
+    }<br>
+  &lt;/style&gt;</body></html>

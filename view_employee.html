@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;?php include &#39;db_connect.php&#39; ?&gt;<br>
+&lt;?php<br>
+if(isset($_GET[&#39;id&#39;])){<br>
+&nbsp;&nbsp;&nbsp;$qry = $conn&ndash;&gt;query(&quot;SELECT *,concat(lastname,&#39;, &#39;,firstname,&#39; &#39;,middlename) as name FROM employee_list where id = &quot;.$_GET[&#39;id&#39;])&ndash;&gt;fetch_array();<br>
+foreach($qry as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;$$k = $v;<br>
+}<br>
+$designation= $conn&ndash;&gt;query(&quot;SELECT * FROM designation_list where id = $designation_id &quot;);<br>
+$designation = $designation&ndash;&gt;num_rows &gt; 0 ? $designation&ndash;&gt;fetch_array()[&#39;designation&#39;] : &#39;Unknown Designation&#39;;<br>
+$department= $conn&ndash;&gt;query(&quot;SELECT * FROM department_list where id = $department_id &quot;);<br>
+$department = $department&ndash;&gt;num_rows &gt; 0 ? $department&ndash;&gt;fetch_array()[&#39;department&#39;] : &#39;Unknown Department&#39;;<br>
+$evaluator= $conn&ndash;&gt;query(&quot;SELECT *,concat(lastname,&#39;, &#39;,firstname,&#39; &#39;,middlename) as name FROM evaluator_list where id = $evaluator_id &quot;);<br>
+$evaluator = $evaluator&ndash;&gt;num_rows &gt; 0 ? $evaluator&ndash;&gt;fetch_array()[&#39;name&#39;] : &#39;Unknown Evaluator&#39;;<br>
+}<br>
+?&gt;<br>
+&lt;div class=&quot;container&ndash;fluid&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;div class=&quot;card card&ndash;widget widget&ndash;user shadow&quot;&gt;<br>
+      &lt;div class=&quot;widget&ndash;user&ndash;header bg&ndash;dark&quot;&gt;<br>
+        &lt;h3 class=&quot;widget&ndash;user&ndash;username&quot;&gt;&lt;?php echo ucwords($name) ?&gt;&lt;/h3&gt;<br>
+        &lt;h5 class=&quot;widget&ndash;user&ndash;desc&quot;&gt;&lt;?php echo $email ?&gt;&lt;/h5&gt;<br>
+      &lt;/div&gt;<br>
+      &lt;div class=&quot;widget&ndash;user&ndash;image&quot;&gt;<br>
+      	&lt;?php if(empty($avatar) || (!empty($avatar) &amp;&amp; !is_file(&#39;assets/uploads/&#39;.$avatar))): ?&gt;<br>
+      	&lt;span class=&quot;brand&ndash;image img&ndash;circle elevation&ndash;2 d&ndash;flex justify&ndash;content&ndash;center align&ndash;items&ndash;center bg&ndash;primary text&ndash;white font&ndash;weight&ndash;500&quot; style=&quot;width: 90px;height:90px&quot;&gt;&lt;h4&gt;&lt;?php echo strtoupper(substr($firstname, 0,1).substr($lastname, 0,1)) ?&gt;&lt;/h4&gt;&lt;/span&gt;<br>
+      	&lt;?php else: ?&gt;<br>
+        &lt;img class=&quot;img&ndash;circle elevation&ndash;2&quot; src=&quot;assets/uploads/&lt;?php echo $avatar ?&gt;&quot; alt=&quot;User Avatar&quot;  style=&quot;width: 90px;height:90px;object&ndash;fit: cover&quot;&gt;<br>
+      	&lt;?php endif ?&gt;<br>
+      &lt;/div&gt;<br>
+      &lt;div class=&quot;card&ndash;footer&quot;&gt;<br>
+        &lt;div class=&quot;container&ndash;fluid&quot;&gt;<br>
+        	&lt;dl&gt;<br>
+        		&lt;dt&gt;Department&lt;/dt&gt;<br>
+        		&lt;dd&gt;&lt;?php echo $department ?&gt;&lt;/dd&gt;<br>
+        	&lt;/dl&gt;<br>
+          &lt;dl&gt;<br>
+            &lt;dt&gt;Designation&lt;/dt&gt;<br>
+            &lt;dd&gt;&lt;?php echo $designation ?&gt;&lt;/dd&gt;<br>
+          &lt;/dl&gt;<br>
+          &lt;dl&gt;<br>
+            &lt;dt&gt;Evaluator&lt;/dt&gt;<br>
+            &lt;dd&gt;&lt;?php echo ucwords($evaluator) ?&gt;&lt;/dd&gt;<br>
+          &lt;/dl&gt;<br>
+        &lt;/div&gt;<br>
+    &lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&lt;/div&gt;<br>
+&lt;div class=&quot;modal&ndash;footer display p&ndash;0 m&ndash;0&quot;&gt;<br>
+        &lt;button type=&quot;button&quot; class=&quot;btn btn&ndash;secondary&quot; data&ndash;dismiss=&quot;modal&quot;&gt;Close&lt;/button&gt;<br>
+&lt;/div&gt;<br>
+&lt;style&gt;<br>
+&nbsp;&nbsp;&nbsp;#uni_modal .modal&ndash;footer{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;display: none<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;#uni_modal .modal&ndash;footer.display{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;display: flex<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&lt;/style&gt;</body></html>

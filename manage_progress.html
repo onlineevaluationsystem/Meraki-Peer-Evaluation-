@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;?php <br>
+include &#39;db_connect.php&#39;;<br>
+if(isset($_GET[&#39;id&#39;])){<br>
+&nbsp;&nbsp;&nbsp;$qry = $conn&ndash;&gt;query(&quot;SELECT * FROM task_progress where id = &quot;.$_GET[&#39;id&#39;])&ndash;&gt;fetch_array();<br>
+&nbsp;&nbsp;&nbsp;foreach($qry as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$$k = $v;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+?&gt;<br>
+&lt;div class=&quot;container&ndash;fluid&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;form action=&quot;&quot; id=&quot;manage&ndash;progress&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=&quot;hidden&quot; name=&quot;id&quot; value=&quot;&lt;?php echo isset($id) ? $id : &#39;&#39; ?&gt;&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=&quot;hidden&quot; name=&quot;task_id&quot; value=&quot;&lt;?php echo isset($_GET[&#39;tid&#39;]) ? $_GET[&#39;tid&#39;] : &#39;&#39; ?&gt;&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;col&ndash;lg&ndash;12&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;row&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;form&ndash;group&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=&quot;&quot;&gt;Progress Description&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;textarea name=&quot;progress&quot; id=&quot;progress&quot; cols=&quot;30&quot; rows=&quot;10&quot; class=&quot;summernote form&ndash;control&quot; required=&quot;&quot;&gt;&lt;?php echo isset($progress) ? $progress : &#39;&#39; ?&gt;&lt;/textarea&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;form&ndash;group clearfix&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;icheck&ndash;primary d&ndash;inline&quot;&gt;<br>
+                        &lt;input type=&quot;checkbox&quot; name=&quot;is_complete&quot; value=&quot;1&quot; &lt;?php echo isset($is_complete) &amp;&amp; $is_complete == 1 ? &#39;checked&#39; : &#39;&#39; ?&gt; id=&quot;is_complete&quot;&gt;<br>
+                        &lt;label for=&quot;is_complete&quot;&gt;<br>
+                        	Task Completed<br>
+                        &lt;/label&gt;<br>
+                	&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;/form&gt;<br>
+&lt;/div&gt;<br>
+<br>
+&lt;script&gt;<br>
+&nbsp;&nbsp;&nbsp;$(document).ready(function(){<br>
+&nbsp;&nbsp;&nbsp;$(&#39;.summernote&#39;).summernote({<br>
+        height: 200,<br>
+        toolbar: [<br>
+            [ &#39;style&#39;, [ &#39;style&#39; ] ],<br>
+            [ &#39;font&#39;, [ &#39;bold&#39;, &#39;italic&#39;, &#39;underline&#39;, &#39;strikethrough&#39;, &#39;superscript&#39;, &#39;subscript&#39;, &#39;clear&#39;] ],<br>
+            [ &#39;fontname&#39;, [ &#39;fontname&#39; ] ],<br>
+            [ &#39;fontsize&#39;, [ &#39;fontsize&#39; ] ],<br>
+            [ &#39;color&#39;, [ &#39;color&#39; ] ],<br>
+            [ &#39;para&#39;, [ &#39;ol&#39;, &#39;ul&#39;, &#39;paragraph&#39;, &#39;height&#39; ] ],<br>
+            [ &#39;table&#39;, [ &#39;table&#39; ] ],<br>
+            [ &#39;view&#39;, [ &#39;undo&#39;, &#39;redo&#39;, &#39;fullscreen&#39;, &#39;codeview&#39;, &#39;help&#39; ] ]<br>
+        ]<br>
+    })<br>
+     $(&#39;.select2&#39;).select2({<br>
+&nbsp;&nbsp;&nbsp;    placeholder:&quot;Please select here&quot;,<br>
+&nbsp;&nbsp;&nbsp;    width: &quot;100%&quot;<br>
+&nbsp;&nbsp;&nbsp;  });<br>
+     })<br>
+    $(&#39;#manage&ndash;progress&#39;).submit(function(e){<br>
+    	e.preventDefault()<br>
+    	start_load()<br>
+    	if($(&#39;#progress&#39;).val() == &#39;&#39;){<br>
+    		alert_toast(&quot;Please fill the progress description first&quot;,&#39;error&#39;);<br>
+    		end_load();<br>
+    		return false;<br>
+    	}<br>
+    	$.ajax({<br>
+    		url:&#39;ajax.php?action=save_progress&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data: new FormData($(this)[0]),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    cache: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    contentType: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    processData: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    method: &#39;POST&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    type: &#39;POST&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;success:function(resp){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(resp == 1){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert_toast(&#39;Data successfully saved&#39;,&quot;success&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;location.reload()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},1500)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+    	})<br>
+    })<br>
+&lt;/script&gt;</body></html>

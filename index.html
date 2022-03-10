@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;!DOCTYPE html&gt;<br>
+&lt;html lang=&quot;en&quot;&gt;<br>
+&lt;?php session_start() ?&gt;<br>
+&lt;?php <br>
+&nbsp;&nbsp;&nbsp;if(!isset($_SESSION[&#39;login_id&#39;]))<br>
+&nbsp;&nbsp;&nbsp;    header(&#39;location:login.php&#39;);<br>
+    include &#39;db_connect.php&#39;;<br>
+    ob_start();<br>
+  if(!isset($_SESSION[&#39;system&#39;])){<br>
+<br>
+    $system = $conn&ndash;&gt;query(&quot;SELECT * FROM system_settings&quot;)&ndash;&gt;fetch_array();<br>
+    foreach($system as $k =&gt; $v){<br>
+      $_SESSION[&#39;system&#39;][$k] = $v;<br>
+    }<br>
+  }<br>
+  ob_end_flush();<br>
+<br>
+&nbsp;&nbsp;&nbsp;include &#39;header.php&#39; <br>
+?&gt;<br>
+&lt;body class=&quot;hold&ndash;transition sidebar&ndash;mini layout&ndash;fixed layout&ndash;navbar&ndash;fixed layout&ndash;footer&ndash;fixed&quot;&gt;<br>
+&lt;div class=&quot;wrapper&quot;&gt;<br>
+  &lt;?php include &#39;topbar.php&#39; ?&gt;<br>
+  &lt;?php include &#39;sidebar.php&#39; ?&gt;<br>
+<br>
+  &lt;!&ndash;&ndash; Content Wrapper. Contains page content &ndash;&ndash;&gt;<br>
+  &lt;div class=&quot;content&ndash;wrapper&quot;&gt;<br>
+  	 &lt;div class=&quot;toast&quot; id=&quot;alert_toast&quot; role=&quot;alert&quot; aria&ndash;live=&quot;assertive&quot; aria&ndash;atomic=&quot;true&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;    &lt;div class=&quot;toast&ndash;body text&ndash;white&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;    &lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;  &lt;/div&gt;<br>
+    &lt;div id=&quot;toastsContainerTopRight&quot; class=&quot;toasts&ndash;top&ndash;right fixed&quot;&gt;&lt;/div&gt;<br>
+    &lt;!&ndash;&ndash; Content Header (Page header) &ndash;&ndash;&gt;<br>
+    &lt;div class=&quot;content&ndash;header&quot;&gt;<br>
+      &lt;div class=&quot;container&ndash;fluid&quot;&gt;<br>
+        &lt;div class=&quot;row mb&ndash;2&quot;&gt;<br>
+          &lt;div class=&quot;col&ndash;sm&ndash;6&quot;&gt;<br>
+            &lt;h1 class=&quot;m&ndash;0&quot;&gt;&lt;?php echo $title ?&gt;&lt;/h1&gt;<br>
+          &lt;/div&gt;&lt;!&ndash;&ndash; /.col &ndash;&ndash;&gt;<br>
+<br>
+        &lt;/div&gt;&lt;!&ndash;&ndash; /.row &ndash;&ndash;&gt;<br>
+            &lt;hr class=&quot;border&ndash;primary&quot;&gt;<br>
+      &lt;/div&gt;&lt;!&ndash;&ndash; /.container&ndash;fluid &ndash;&ndash;&gt;<br>
+    &lt;/div&gt;<br>
+    &lt;!&ndash;&ndash; /.content&ndash;header &ndash;&ndash;&gt;<br>
+<br>
+    &lt;!&ndash;&ndash; Main content &ndash;&ndash;&gt;<br>
+    &lt;section class=&quot;content&quot;&gt;<br>
+      &lt;div class=&quot;container&ndash;fluid&quot;&gt;<br>
+         &lt;?php <br>
+            $page = isset($_GET[&#39;page&#39;]) ? $_GET[&#39;page&#39;] : &#39;home&#39;;<br>
+            if(!file_exists($page.&quot;.php&quot;)){<br>
+                include &#39;404.html&#39;;<br>
+            }else{<br>
+            include $page.&#39;.php&#39;;<br>
+<br>
+            }<br>
+          ?&gt;<br>
+      &lt;/div&gt;&lt;!&ndash;&ndash;/. container&ndash;fluid &ndash;&ndash;&gt;<br>
+    &lt;/section&gt;<br>
+    &lt;!&ndash;&ndash; /.content &ndash;&ndash;&gt;<br>
+    &lt;div class=&quot;modal fade&quot; id=&quot;confirm_modal&quot; role=&#39;dialog&#39;&gt;<br>
+    &lt;div class=&quot;modal&ndash;dialog modal&ndash;md&quot; role=&quot;document&quot;&gt;<br>
+      &lt;div class=&quot;modal&ndash;content&quot;&gt;<br>
+        &lt;div class=&quot;modal&ndash;header&quot;&gt;<br>
+        &lt;h5 class=&quot;modal&ndash;title&quot;&gt;Confirmation&lt;/h5&gt;<br>
+      &lt;/div&gt;<br>
+      &lt;div class=&quot;modal&ndash;body&quot;&gt;<br>
+        &lt;div id=&quot;delete_content&quot;&gt;&lt;/div&gt;<br>
+      &lt;/div&gt;<br>
+      &lt;div class=&quot;modal&ndash;footer&quot;&gt;<br>
+        &lt;button type=&quot;button&quot; class=&quot;btn btn&ndash;primary&quot; id=&#39;confirm&#39; onclick=&quot;&quot;&gt;Continue&lt;/button&gt;<br>
+        &lt;button type=&quot;button&quot; class=&quot;btn btn&ndash;secondary&quot; data&ndash;dismiss=&quot;modal&quot;&gt;Close&lt;/button&gt;<br>
+      &lt;/div&gt;<br>
+      &lt;/div&gt;<br>
+    &lt;/div&gt;<br>
+  &lt;/div&gt;<br>
+  &lt;div class=&quot;modal fade&quot; id=&quot;uni_modal&quot; role=&#39;dialog&#39;&gt;<br>
+    &lt;div class=&quot;modal&ndash;dialog modal&ndash;md&quot; role=&quot;document&quot;&gt;<br>
+      &lt;div class=&quot;modal&ndash;content&quot;&gt;<br>
+        &lt;div class=&quot;modal&ndash;header&quot;&gt;<br>
+        &lt;h5 class=&quot;modal&ndash;title&quot;&gt;&lt;/h5&gt;<br>
+      &lt;/div&gt;<br>
+      &lt;div class=&quot;modal&ndash;body&quot;&gt;<br>
+      &lt;/div&gt;<br>
+      &lt;div class=&quot;modal&ndash;footer&quot;&gt;<br>
+        &lt;button type=&quot;button&quot; class=&quot;btn btn&ndash;primary&quot; id=&#39;submit&#39; onclick=&quot;$(&#39;#uni_modal form&#39;).submit()&quot;&gt;Save&lt;/button&gt;<br>
+        &lt;button type=&quot;button&quot; class=&quot;btn btn&ndash;secondary&quot; data&ndash;dismiss=&quot;modal&quot;&gt;Cancel&lt;/button&gt;<br>
+      &lt;/div&gt;<br>
+      &lt;/div&gt;<br>
+    &lt;/div&gt;<br>
+  &lt;/div&gt;<br>
+  &lt;div class=&quot;modal fade&quot; id=&quot;uni_modal_right&quot; role=&#39;dialog&#39;&gt;<br>
+    &lt;div class=&quot;modal&ndash;dialog modal&ndash;full&ndash;height  modal&ndash;md&quot; role=&quot;document&quot;&gt;<br>
+      &lt;div class=&quot;modal&ndash;content&quot;&gt;<br>
+        &lt;div class=&quot;modal&ndash;header&quot;&gt;<br>
+        &lt;h5 class=&quot;modal&ndash;title&quot;&gt;&lt;/h5&gt;<br>
+        &lt;button type=&quot;button&quot; class=&quot;close&quot; data&ndash;dismiss=&quot;modal&quot; aria&ndash;label=&quot;Close&quot;&gt;<br>
+          &lt;span class=&quot;fa fa&ndash;arrow&ndash;right&quot;&gt;&lt;/span&gt;<br>
+        &lt;/button&gt;<br>
+      &lt;/div&gt;<br>
+      &lt;div class=&quot;modal&ndash;body&quot;&gt;<br>
+      &lt;/div&gt;<br>
+      &lt;/div&gt;<br>
+    &lt;/div&gt;<br>
+  &lt;/div&gt;<br>
+  &lt;div class=&quot;modal fade&quot; id=&quot;viewer_modal&quot; role=&#39;dialog&#39;&gt;<br>
+    &lt;div class=&quot;modal&ndash;dialog modal&ndash;md&quot; role=&quot;document&quot;&gt;<br>
+      &lt;div class=&quot;modal&ndash;content&quot;&gt;<br>
+              &lt;button type=&quot;button&quot; class=&quot;btn&ndash;close&quot; data&ndash;dismiss=&quot;modal&quot;&gt;&lt;span class=&quot;fa fa&ndash;times&quot;&gt;&lt;/span&gt;&lt;/button&gt;<br>
+              &lt;img src=&quot;&quot; alt=&quot;&quot;&gt;<br>
+      &lt;/div&gt;<br>
+    &lt;/div&gt;<br>
+  &lt;/div&gt;<br>
+  &lt;/div&gt;<br>
+  &lt;!&ndash;&ndash; /.content&ndash;wrapper &ndash;&ndash;&gt;<br>
+<br>
+  &lt;!&ndash;&ndash; Control Sidebar &ndash;&ndash;&gt;<br>
+  &lt;aside class=&quot;control&ndash;sidebar control&ndash;sidebar&ndash;dark&quot;&gt;<br>
+    &lt;!&ndash;&ndash; Control sidebar content goes here &ndash;&ndash;&gt;<br>
+  &lt;/aside&gt;<br>
+  &lt;!&ndash;&ndash; /.control&ndash;sidebar &ndash;&ndash;&gt;<br>
+<br>
+  &lt;!&ndash;&ndash; Main Footer &ndash;&ndash;&gt;<br>
+  &lt;footer class=&quot;main&ndash;footer&quot;&gt;<br>
+    &lt;strong&gt;Copyright &amp;copy; 2020 &lt;a href=&quot;https://www.sourcecodester.com/&quot;&gt;sourcecodester.com&lt;/a&gt;.&lt;/strong&gt;<br>
+    All rights reserved.<br>
+    &lt;div class=&quot;float&ndash;right d&ndash;none d&ndash;sm&ndash;inline&ndash;block&quot;&gt;<br>
+      &lt;b&gt;&lt;?php echo $_SESSION[&#39;system&#39;][&#39;name&#39;] ?&gt;&lt;/b&gt;<br>
+    &lt;/div&gt;<br>
+  &lt;/footer&gt;<br>
+&lt;/div&gt;<br>
+&lt;!&ndash;&ndash; ./wrapper &ndash;&ndash;&gt;<br>
+<br>
+&lt;!&ndash;&ndash; REQUIRED SCRIPTS &ndash;&ndash;&gt;<br>
+&lt;!&ndash;&ndash; jQuery &ndash;&ndash;&gt;<br>
+&lt;!&ndash;&ndash; Bootstrap &ndash;&ndash;&gt;<br>
+&lt;?php include &#39;footer.php&#39; ?&gt;<br>
+&lt;/body&gt;<br>
+&lt;/html&gt;</body></html>

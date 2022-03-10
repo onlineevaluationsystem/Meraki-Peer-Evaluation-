@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;!DOCTYPE html&gt;<br>
+&lt;html lang=&quot;en&quot;&gt;<br>
+&lt;?php <br>
+session_start();<br>
+include(&#39;./db_connect.php&#39;);<br>
+  ob_start();<br>
+  // if(!isset($_SESSION[&#39;system&#39;])){<br>
+<br>
+    $system = $conn&ndash;&gt;query(&quot;SELECT * FROM system_settings&quot;)&ndash;&gt;fetch_array();<br>
+    foreach($system as $k =&gt; $v){<br>
+      $_SESSION[&#39;system&#39;][$k] = $v;<br>
+    }<br>
+  // }<br>
+  ob_end_flush();<br>
+?&gt;<br>
+&lt;?php <br>
+if(isset($_SESSION[&#39;login_id&#39;]))<br>
+header(&quot;location:index.php?page=home&quot;);<br>
+<br>
+?&gt;<br>
+&lt;?php include &#39;header.php&#39; ?&gt;<br>
+&lt;body class=&quot;hold&ndash;transition login&ndash;page bg&ndash;black&quot;&gt;<br>
+  &lt;h2&gt;&lt;b&gt;&lt;?php echo $_SESSION[&#39;system&#39;][&#39;name&#39;] ?&gt; &ndash; Admin&lt;/b&gt;&lt;/h2&gt;<br>
+&lt;div class=&quot;login&ndash;box&quot;&gt;<br>
+  &lt;div class=&quot;login&ndash;logo&quot;&gt;<br>
+    &lt;a href=&quot;#&quot; class=&quot;text&ndash;white&quot;&gt;&lt;/a&gt;<br>
+  &lt;/div&gt;<br>
+  &lt;!&ndash;&ndash; /.login&ndash;logo &ndash;&ndash;&gt;<br>
+  &lt;div class=&quot;card&quot;&gt;<br>
+    &lt;div class=&quot;card&ndash;body login&ndash;card&ndash;body&quot;&gt;<br>
+      &lt;form action=&quot;&quot; id=&quot;login&ndash;form&quot;&gt;<br>
+        &lt;div class=&quot;input&ndash;group mb&ndash;3&quot;&gt;<br>
+          &lt;input type=&quot;email&quot; class=&quot;form&ndash;control&quot; name=&quot;email&quot; required placeholder=&quot;Email&quot;&gt;<br>
+          &lt;div class=&quot;input&ndash;group&ndash;append&quot;&gt;<br>
+            &lt;div class=&quot;input&ndash;group&ndash;text&quot;&gt;<br>
+              &lt;span class=&quot;fas fa&ndash;envelope&quot;&gt;&lt;/span&gt;<br>
+            &lt;/div&gt;<br>
+          &lt;/div&gt;<br>
+        &lt;/div&gt;<br>
+        &lt;div class=&quot;input&ndash;group mb&ndash;3&quot;&gt;<br>
+          &lt;input type=&quot;password&quot; class=&quot;form&ndash;control&quot; name=&quot;password&quot; required placeholder=&quot;Password&quot;&gt;<br>
+          &lt;div class=&quot;input&ndash;group&ndash;append&quot;&gt;<br>
+            &lt;div class=&quot;input&ndash;group&ndash;text&quot;&gt;<br>
+              &lt;span class=&quot;fas fa&ndash;lock&quot;&gt;&lt;/span&gt;<br>
+            &lt;/div&gt;<br>
+          &lt;/div&gt;<br>
+        &lt;/div&gt;<br>
+        &lt;div class=&quot;form&ndash;group mb&ndash;3&quot;&gt;<br>
+          &lt;label for=&quot;&quot;&gt;Login As&lt;/label&gt;<br>
+          &lt;select name=&quot;login&quot; id=&quot;&quot; class=&quot;custom&ndash;select custom&ndash;select&ndash;sm&quot;&gt;<br>
+            &lt;option value=&quot;0&quot;&gt;Employee&lt;/option&gt;<br>
+            &lt;option value=&quot;1&quot;&gt;Evaluator&lt;/option&gt;<br>
+            &lt;option value=&quot;2&quot;&gt;Admin&lt;/option&gt;<br>
+          &lt;/select&gt;<br>
+        &lt;/div&gt;<br>
+        &lt;div class=&quot;row&quot;&gt;<br>
+          &lt;div class=&quot;col&ndash;8&quot;&gt;<br>
+            &lt;div class=&quot;icheck&ndash;primary&quot;&gt;<br>
+              &lt;input type=&quot;checkbox&quot; id=&quot;remember&quot;&gt;<br>
+              &lt;label for=&quot;remember&quot;&gt;<br>
+                Remember Me<br>
+              &lt;/label&gt;<br>
+            &lt;/div&gt;<br>
+          &lt;/div&gt;<br>
+          &lt;!&ndash;&ndash; /.col &ndash;&ndash;&gt;<br>
+          &lt;div class=&quot;col&ndash;4&quot;&gt;<br>
+            &lt;button type=&quot;submit&quot; class=&quot;btn btn&ndash;primary btn&ndash;block&quot;&gt;Sign In&lt;/button&gt;<br>
+          &lt;/div&gt;<br>
+          &lt;!&ndash;&ndash; /.col &ndash;&ndash;&gt;<br>
+        &lt;/div&gt;<br>
+      &lt;/form&gt;<br>
+    &lt;/div&gt;<br>
+    &lt;!&ndash;&ndash; /.login&ndash;card&ndash;body &ndash;&ndash;&gt;<br>
+  &lt;/div&gt;<br>
+&lt;/div&gt;<br>
+&lt;!&ndash;&ndash; /.login&ndash;box &ndash;&ndash;&gt;<br>
+&lt;script&gt;<br>
+  $(document).ready(function(){<br>
+    $(&#39;#login&ndash;form&#39;).submit(function(e){<br>
+    e.preventDefault()<br>
+    start_load()<br>
+    if($(this).find(&#39;.alert&ndash;danger&#39;).length &gt; 0 )<br>
+      $(this).find(&#39;.alert&ndash;danger&#39;).remove();<br>
+    $.ajax({<br>
+      url:&#39;ajax.php?action=login&#39;,<br>
+      method:&#39;POST&#39;,<br>
+      data:$(this).serialize(),<br>
+      error:err=&gt;{<br>
+        console.log(err)<br>
+        end_load();<br>
+<br>
+      },<br>
+      success:function(resp){<br>
+        if(resp == 1){<br>
+          location.href =&#39;index.php?page=home&#39;;<br>
+        }else{<br>
+          $(&#39;#login&ndash;form&#39;).prepend(&#39;&lt;div class=&quot;alert alert&ndash;danger&quot;&gt;Username or password is incorrect.&lt;/div&gt;&#39;)<br>
+          end_load();<br>
+        }<br>
+      }<br>
+    })<br>
+  })<br>
+  })<br>
+&lt;/script&gt;<br>
+&lt;?php include &#39;footer.php&#39; ?&gt;<br>
+<br>
+&lt;/body&gt;<br>
+&lt;/html&gt;</body></html>

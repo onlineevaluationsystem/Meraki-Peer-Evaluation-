@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;?php<br>
+session_start();<br>
+include &#39;db_connect.php&#39;;<br>
+$id = $_GET[&#39;id&#39;];<br>
+?&gt;<br>
+&lt;div class=&quot;container&ndash;fluid&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;div id=&quot;post&ndash;field&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;?php <br>
+&nbsp;&nbsp;&nbsp;$progress = $conn&ndash;&gt;query(&quot;SELECT p.*,concat(u.firstname,&#39; &#39;,u.lastname) as uname,u.avatar FROM task_progress p inner join task_list t on t.id = p.task_id inner join employee_list u on u.id = t.employee_id where p.task_id = $id order by unix_timestamp(p.date_created) desc &quot;);<br>
+&nbsp;&nbsp;&nbsp;if($progress&ndash;&gt;num_rows &gt; 0):<br>
+&nbsp;&nbsp;&nbsp;while($row = $progress&ndash;&gt;fetch_assoc()):<br>
+&nbsp;&nbsp;&nbsp;?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;post&quot;&gt;<br>
+              &lt;div class=&quot;user&ndash;block&quot;&gt;<br>
+              	&lt;?php if($_SESSION[&#39;login_type&#39;] == 0): ?&gt;<br>
+              	&lt;span class=&quot;btn&ndash;group dropleft float&ndash;right&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;span class=&quot;btndropdown&ndash;toggle&quot; data&ndash;toggle=&quot;dropdown&quot; aria&ndash;haspopup=&quot;true&quot; aria&ndash;expanded=&quot;false&quot; style=&quot;cursor: pointer;&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    &lt;i class=&quot;fa fa&ndash;ellipsis&ndash;v&quot;&gt;&lt;/i&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;/span&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;div class=&quot;dropdown&ndash;menu&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  	&lt;a class=&quot;dropdown&ndash;item manage_progress&quot; href=&quot;javascript:void(0)&quot; data&ndash;id=&quot;&lt;?php echo $row[&#39;id&#39;] ?&gt;&quot;  data&ndash;task=&quot;&lt;?php echo $row[&#39;task&#39;] ?&gt;&quot;&gt;Edit&lt;/a&gt;<br>
+                  	&lt;div class=&quot;dropdown&ndash;divider&quot;&gt;&lt;/div&gt;<br>
+                     &lt;a class=&quot;dropdown&ndash;item delete_progress&quot; href=&quot;javascript:void(0)&quot; data&ndash;id=&quot;&lt;?php echo $row[&#39;id&#39;] ?&gt;&quot;&gt;Delete&lt;/a&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/span&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;?php endif; ?&gt;<br>
+                &lt;img class=&quot;img&ndash;circle img&ndash;bordered&ndash;sm&quot; src=&quot;assets/uploads/&lt;?php echo $row[&#39;avatar&#39;] ?&gt;&quot; alt=&quot;user image&quot;&gt;<br>
+                &lt;span class=&quot;username&quot;&gt;<br>
+                  &lt;a href=&quot;#&quot;&gt;&lt;?php echo ucwords($row[&#39;uname&#39;]) ?&gt;&lt;/a&gt;<br>
+                &lt;/span&gt;<br>
+                &lt;span class=&quot;description&quot;&gt;<br>
+                	&lt;span class=&quot;fa fa&ndash;calendar&ndash;day&quot;&gt;&lt;/span&gt;<br>
+                	&lt;span&gt;&lt;b&gt;&lt;?php echo date(&#39;M d, Y&#39;,strtotime($row[&#39;date_created&#39;])) ?&gt;&lt;/b&gt;&lt;/span&gt;<br>
+            	&lt;/span&gt;<br>
+              &lt;/div&gt;<br>
+              &lt;div&gt;<br>
+               &lt;?php echo html_entity_decode($row[&#39;progress&#39;]) ?&gt;<br>
+              &lt;/div&gt;<br>
+<br>
+              &lt;p&gt;<br>
+              &lt;/p&gt;<br>
+        &lt;/div&gt;<br>
+    &lt;?php endwhile; ?&gt;<br>
+    &lt;?php else: ?&gt;<br>
+    	&lt;div class=&quot;mb&ndash;2&quot;&gt;<br>
+    	&lt;center&gt;&lt;i&gt;No Progress Yet&lt;/i&gt;&lt;/center&gt;<br>
+    		<br>
+    	&lt;/div&gt;<br>
+    &lt;?php endif; ?&gt;<br>
+    &lt;/div&gt;<br>
+&lt;/div&gt;<br>
+&lt;style&gt;<br>
+&nbsp;&nbsp;&nbsp;.users&ndash;list&gt;li img {<br>
+&nbsp;&nbsp;&nbsp;    border&ndash;radius: 50%;<br>
+&nbsp;&nbsp;&nbsp;    height: 67px;<br>
+&nbsp;&nbsp;&nbsp;    width: 67px;<br>
+&nbsp;&nbsp;&nbsp;    object&ndash;fit: cover;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;.users&ndash;list&gt;li {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width: 33.33% !important<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;.truncate {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&ndash;webkit&ndash;line&ndash;clamp:1 !important;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&lt;/style&gt;<br>
+&lt;div class=&quot;modal&ndash;footer display p&ndash;0 m&ndash;0&quot;&gt;<br>
+        &lt;button type=&quot;button&quot; class=&quot;btn btn&ndash;secondary&quot; data&ndash;dismiss=&quot;modal&quot;&gt;Close&lt;/button&gt;<br>
+&lt;/div&gt;<br>
+&lt;script&gt;<br>
+&nbsp;&nbsp;&nbsp;$(&#39;.manage_progress&#39;).click(function(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uni_modal(&quot;&lt;i class=&#39;fa fa&ndash;edit&#39;&gt;&lt;/i&gt; Edit Progress&quot;,&quot;manage_progress.php?tid=&lt;?php echo $id ?&gt;&amp;id=&quot;+$(this).attr(&#39;data&ndash;id&#39;),&#39;large&#39;)<br>
+&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;$(&#39;.delete_progress&#39;).click(function(){<br>
+&nbsp;&nbsp;&nbsp;_conf(&quot;Are you sure to delete this progress?&quot;,&quot;delete_progress&quot;,[$(this).attr(&#39;data&ndash;id&#39;)])<br>
+&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;function delete_progress($id){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start_load()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$.ajax({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url:&#39;ajax.php?action=delete_progress&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method:&#39;POST&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data:{id:$id},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;success:function(resp){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(resp==1){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert_toast(&quot;Data successfully deleted&quot;,&#39;success&#39;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;location.reload()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},1500)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&lt;/script&gt;<br>
+&lt;style&gt;<br>
+&nbsp;&nbsp;&nbsp;#uni_modal .modal&ndash;footer{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;display: none<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;#uni_modal .modal&ndash;footer.display{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;display: flex<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;#post&ndash;field{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;max&ndash;height: 70vh;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;overflow: auto;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&lt;/style&gt;</body></html>

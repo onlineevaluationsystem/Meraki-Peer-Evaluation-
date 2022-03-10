@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;?php include&#39;db_connect.php&#39; ?&gt;<br>
+&lt;div class=&quot;col&ndash;lg&ndash;12&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;div class=&quot;card card&ndash;outline card&ndash;success&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;card&ndash;header&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;?php if($_SESSION[&#39;login_type&#39;] == 2): ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;card&ndash;tools&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button class=&quot;btn btn&ndash;block btn&ndash;sm btn&ndash;default btn&ndash;flat border&ndash;primary&quot; id=&quot;new_task&quot;&gt;&lt;i class=&quot;fa fa&ndash;plus&quot;&gt;&lt;/i&gt; Add New Task&lt;/button&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;?php endif; ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=&quot;card&ndash;body&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;table class=&quot;table tabe&ndash;hover table&ndash;condensed&quot; id=&quot;list&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;thead&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th class=&quot;text&ndash;center&quot;&gt;#&lt;/th&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th width=&quot;30%&quot;&gt;Task&lt;/th&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;Due Date&lt;/th&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;?php if($_SESSION[&#39;login_type&#39;] != 0): ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;Assigned To&lt;/th&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;?php endif; ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;Status&lt;/th&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;Action&lt;/th&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/thead&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tbody&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;?php<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$i = 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$where = &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($_SESSION[&#39;login_type&#39;] == 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$where = &quot; where t.employee_id = &#39;{$_SESSION[&#39;login_id&#39;]}&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elseif($_SESSION[&#39;login_type&#39;] == 1)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$where = &quot; where e.evaluator_id = {$_SESSION[&#39;login_id&#39;]} &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$qry = $conn&ndash;&gt;query(&quot;SELECT t.*,concat(e.lastname,&#39;, &#39;,e.firstname,&#39; &#39;,e.middlename) as name FROM task_list t inner join employee_list e on e.id = t.employee_id $where order by unix_timestamp(t.date_created) asc&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while($row= $qry&ndash;&gt;fetch_assoc()):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$trans = get_html_translation_table(HTML_ENTITIES,ENT_QUOTES);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unset($trans[&quot;\&quot;&quot;], $trans[&quot;&lt;&quot;], $trans[&quot;&gt;&quot;], $trans[&quot;&lt;h2&quot;]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$desc = strtr(html_entity_decode($row[&#39;description&#39;]),$trans);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$desc=str_replace(array(&quot;&lt;li&gt;&quot;,&quot;&lt;/li&gt;&quot;), array(&quot;&quot;,&quot;, &quot;), $desc);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td class=&quot;text&ndash;center&quot;&gt;&lt;?php echo $i++ ?&gt;&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;&lt;b&gt;&lt;?php echo ucwords($row[&#39;task&#39;]) ?&gt;&lt;/b&gt;&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p class=&quot;truncate&quot;&gt;&lt;?php echo strip_tags($desc) ?&gt;&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;b&gt;&lt;?php echo date(&quot;M d, Y&quot;,strtotime($row[&#39;due_date&#39;])) ?&gt;&lt;/b&gt;&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;?php if($_SESSION[&#39;login_type&#39;] != 0): ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;p&gt;&lt;b&gt;&lt;?php echo ucwords($row[&#39;name&#39;]) ?&gt;&lt;/b&gt;&lt;/p&gt;&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;?php endif; ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;<br>
+                        	&lt;?php <br>
+                        	if($row[&#39;status&#39;] == 0){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  		echo &quot;&lt;span class=&#39;badge badge&ndash;info&#39;&gt;Pending&lt;/span&gt;&quot;;<br>
+                        	}elseif($row[&#39;status&#39;] == 1){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  		echo &quot;&lt;span class=&#39;badge badge&ndash;primary&#39;&gt;On&ndash;Progress&lt;/span&gt;&quot;;<br>
+                        	}elseif($row[&#39;status&#39;] == 2){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  		echo &quot;&lt;span class=&#39;badge badge&ndash;success&#39;&gt;Complete&lt;/span&gt;&quot;;<br>
+                        	}<br>
+                        	if(strtotime($row[&#39;due_date&#39;]) &lt; strtotime(date(&#39;Y&ndash;m&ndash;d&#39;))){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  		echo &quot;&lt;span class=&#39;badge badge&ndash;danger mx&ndash;1&#39;&gt;Over Due&lt;/span&gt;&quot;;<br>
+                        	}<br>
+                        	?&gt;<br>
+                        &lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td class=&quot;text&ndash;center&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button type=&quot;button&quot; class=&quot;btn btn&ndash;default btn&ndash;sm btn&ndash;flat border&ndash;info wave&ndash;effect text&ndash;info dropdown&ndash;toggle&quot; data&ndash;toggle=&quot;dropdown&quot; aria&ndash;expanded=&quot;true&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                      Action<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    &lt;/button&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    &lt;div class=&quot;dropdown&ndash;menu&quot; style=&quot;&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    	&lt;a class=&quot;dropdown&ndash;item view_task&quot; href=&quot;javascript:void(0)&quot; data&ndash;id=&quot;&lt;?php echo $row[&#39;id&#39;] ?&gt;&quot;&gt;View Task&lt;/a&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    	 &lt;div class=&quot;dropdown&ndash;divider&quot;&gt;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    &lt;?php if($_SESSION[&#39;login_type&#39;] == 2): ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    	&lt;a class=&quot;dropdown&ndash;item manage_task&quot; href=&quot;javascript:void(0)&quot; data&ndash;id=&quot;&lt;?php echo $row[&#39;id&#39;] ?&gt;&quot;&gt;Edit&lt;/a&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    	 &lt;div class=&quot;dropdown&ndash;divider&quot;&gt;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                     	&lt;a class=&quot;dropdown&ndash;item delete_task&quot; href=&quot;javascript:void(0)&quot; data&ndash;id=&quot;&lt;?php echo $row[&#39;id&#39;] ?&gt;&quot;&gt;Delete&lt;/a&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    	 &lt;div class=&quot;dropdown&ndash;divider&quot;&gt;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    	&lt;?php endif; ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    &lt;?php if($_SESSION[&#39;login_type&#39;] == 0): ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    &lt;?php if($row[&#39;status&#39;] != 2): ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    &lt;a class=&quot;dropdown&ndash;item new_progress&quot; data&ndash;pid = &#39;&lt;?php echo $row[&#39;pid&#39;] ?&gt;&#39; data&ndash;tid = &#39;&lt;?php echo $row[&#39;id&#39;] ?&gt;&#39;  data&ndash;task = &#39;&lt;?php echo ucwords($row[&#39;task&#39;]) ?&gt;&#39;  href=&quot;javascript:void(0)&quot;&gt;Add Progress&lt;/a&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    	 &lt;div class=&quot;dropdown&ndash;divider&quot;&gt;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    	&lt;?php endif; ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    	&lt;?php endif; ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    &lt;a class=&quot;dropdown&ndash;item view_progress&quot; data&ndash;pid = &#39;&lt;?php echo $row[&#39;pid&#39;] ?&gt;&#39; data&ndash;tid = &#39;&lt;?php echo $row[&#39;id&#39;] ?&gt;&#39;  data&ndash;task = &#39;&lt;?php echo ucwords($row[&#39;task&#39;]) ?&gt;&#39;  href=&quot;javascript:void(0)&quot;&gt;View Progress&lt;/a&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;	<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;?php endwhile; ?&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tbody&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/table&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&lt;/div&gt;<br>
+&lt;style&gt;<br>
+&nbsp;&nbsp;&nbsp;table p{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;margin: unset !important;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;table td{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vertical&ndash;align: middle !important<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&lt;/style&gt;<br>
+&lt;script&gt;<br>
+&nbsp;&nbsp;&nbsp;$(document).ready(function(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$(&#39;#list&#39;).dataTable()<br>
+&nbsp;&nbsp;&nbsp;$(&#39;#new_task&#39;).click(function(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uni_modal(&quot;&lt;i class=&#39;fa fa&ndash;plus&#39;&gt;&lt;/i&gt; New Task&quot;,&quot;manage_task.php&quot;,&#39;mid&ndash;large&#39;)<br>
+&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;$(&#39;.view_task&#39;).click(function(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uni_modal(&quot;View Task&quot;,&quot;view_task.php?id=&quot;+$(this).attr(&#39;data&ndash;id&#39;),&#39;mid&ndash;large&#39;)<br>
+&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;$(&#39;.manage_task&#39;).click(function(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uni_modal(&quot;&lt;i class=&#39;fa fa&ndash;edit&#39;&gt;&lt;/i&gt; Edit Task&quot;,&quot;manage_task.php?id=&quot;+$(this).attr(&#39;data&ndash;id&#39;),&#39;mid&ndash;large&#39;)<br>
+&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;$(&#39;.new_progress&#39;).click(function(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uni_modal(&quot;&lt;i class=&#39;fa fa&ndash;plus&#39;&gt;&lt;/i&gt; New Progress for: &quot;+$(this).attr(&#39;data&ndash;task&#39;),&quot;manage_progress.php?tid=&quot;+$(this).attr(&#39;data&ndash;tid&#39;),&#39;mid&ndash;large&#39;)<br>
+&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;$(&#39;.view_progress&#39;).click(function(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uni_modal(&quot;Progress for: &quot;+$(this).attr(&#39;data&ndash;task&#39;),&quot;view_progress.php?id=&quot;+$(this).attr(&#39;data&ndash;tid&#39;),&#39;mid&ndash;large&#39;)<br>
+&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;$(&#39;.delete_task&#39;).click(function(){<br>
+&nbsp;&nbsp;&nbsp;_conf(&quot;Are you sure to delete this task?&quot;,&quot;delete_employee&quot;,[$(this).attr(&#39;data&ndash;id&#39;)])<br>
+&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;function delete_task($id){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start_load()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$.ajax({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url:&#39;ajax.php?action=delete_task&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method:&#39;POST&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data:{id:$id},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;success:function(resp){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(resp==1){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert_toast(&quot;Data successfully deleted&quot;,&#39;success&#39;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;location.reload()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},1500)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&lt;/script&gt;</body></html>

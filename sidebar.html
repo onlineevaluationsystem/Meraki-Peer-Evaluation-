@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+  &lt;aside class=&quot;main&ndash;sidebar sidebar&ndash;dark&ndash;primary elevation&ndash;4&quot;&gt;<br>
+    &lt;div class=&quot;dropdown&quot;&gt;<br>
+   	&lt;a href=&quot;./&quot; class=&quot;brand&ndash;link&quot;&gt;<br>
+        &lt;?php if($_SESSION[&#39;login_type&#39;] == 2): ?&gt;<br>
+        &lt;h3 class=&quot;text&ndash;center p&ndash;0 m&ndash;0&quot;&gt;&lt;b&gt;ADMIN&lt;/b&gt;&lt;/h3&gt;<br>
+        &lt;?php elseif($_SESSION[&#39;login_type&#39;] == 1): ?&gt;<br>
+        &lt;h3 class=&quot;text&ndash;center p&ndash;0 m&ndash;0&quot;&gt;&lt;b&gt;Evaluator&lt;/b&gt;&lt;/h3&gt;<br>
+         &lt;?php else: ?&gt;<br>
+        &lt;h3 class=&quot;text&ndash;center p&ndash;0 m&ndash;0&quot;&gt;&lt;b&gt;Employee&lt;/b&gt;&lt;/h3&gt;<br>
+        &lt;?php endif; ?&gt;<br>
+<br>
+    &lt;/a&gt;<br>
+      <br>
+    &lt;/div&gt;<br>
+    &lt;div class=&quot;sidebar pb&ndash;4 mb&ndash;4&quot;&gt;<br>
+      &lt;nav class=&quot;mt&ndash;2&quot;&gt;<br>
+        &lt;ul class=&quot;nav nav&ndash;pills nav&ndash;sidebar flex&ndash;column nav&ndash;flat&quot; data&ndash;widget=&quot;treeview&quot; role=&quot;menu&quot; data&ndash;accordion=&quot;false&quot;&gt;<br>
+         &lt;li class=&quot;nav&ndash;item dropdown&quot;&gt;<br>
+            &lt;a href=&quot;./&quot; class=&quot;nav&ndash;link nav&ndash;home&quot;&gt;<br>
+              &lt;i class=&quot;nav&ndash;icon fas fa&ndash;tachometer&ndash;alt&quot;&gt;&lt;/i&gt;<br>
+              &lt;p&gt;<br>
+                Dashboard<br>
+              &lt;/p&gt;<br>
+            &lt;/a&gt;<br>
+          &lt;/li&gt; <br>
+          &lt;li class=&quot;nav&ndash;item dropdown&quot;&gt;<br>
+            &lt;a href=&quot;./index.php?page=task_list&quot; class=&quot;nav&ndash;link nav&ndash;task_list&quot;&gt;<br>
+              &lt;i class=&quot;nav&ndash;icon fas fa&ndash;tasks&quot;&gt;&lt;/i&gt;<br>
+              &lt;p&gt;<br>
+                Tasks<br>
+              &lt;/p&gt;<br>
+            &lt;/a&gt;<br>
+          &lt;/li&gt; <br>
+          &lt;?php if($_SESSION[&#39;login_type&#39;] != 0): ?&gt;<br>
+          &lt;li class=&quot;nav&ndash;item dropdown&quot;&gt;<br>
+            &lt;a href=&quot;./index.php?page=evaluation&quot; class=&quot;nav&ndash;link nav&ndash;evaluation&quot;&gt;<br>
+              &lt;i class=&quot;nav&ndash;icon far fa&ndash;edit&quot;&gt;&lt;/i&gt;<br>
+              &lt;p&gt;<br>
+                Evaluation<br>
+              &lt;/p&gt;<br>
+            &lt;/a&gt;<br>
+          &lt;/li&gt;<br>
+        &lt;?php endif; ?&gt;<br>
+          &lt;?php if($_SESSION[&#39;login_type&#39;] == 2): ?&gt;<br>
+          &lt;li class=&quot;nav&ndash;item dropdown&quot;&gt;<br>
+            &lt;a href=&quot;./index.php?page=department&quot; class=&quot;nav&ndash;link nav&ndash;department&quot;&gt;<br>
+              &lt;i class=&quot;nav&ndash;icon fas fa&ndash;th&ndash;list&quot;&gt;&lt;/i&gt;<br>
+              &lt;p&gt;<br>
+                Departments<br>
+              &lt;/p&gt;<br>
+            &lt;/a&gt;<br>
+          &lt;/li&gt; <br>
+          &lt;li class=&quot;nav&ndash;item dropdown&quot;&gt;<br>
+            &lt;a href=&quot;./index.php?page=designation&quot; class=&quot;nav&ndash;link nav&ndash;designation&quot;&gt;<br>
+              &lt;i class=&quot;nav&ndash;icon fas fa&ndash;list&ndash;alt&quot;&gt;&lt;/i&gt;<br>
+              &lt;p&gt;<br>
+                Designations<br>
+              &lt;/p&gt;<br>
+            &lt;/a&gt;<br>
+          &lt;/li&gt; <br>
+          &lt;li class=&quot;nav&ndash;item&quot;&gt;<br>
+            &lt;a href=&quot;#&quot; class=&quot;nav&ndash;link nav&ndash;edit_employee&quot;&gt;<br>
+              &lt;i class=&quot;nav&ndash;icon fas fa&ndash;user&ndash;friends&quot;&gt;&lt;/i&gt;<br>
+              &lt;p&gt;<br>
+                Employees<br>
+                &lt;i class=&quot;right fas fa&ndash;angle&ndash;left&quot;&gt;&lt;/i&gt;<br>
+              &lt;/p&gt;<br>
+            &lt;/a&gt;<br>
+            &lt;ul class=&quot;nav nav&ndash;treeview&quot;&gt;<br>
+              &lt;li class=&quot;nav&ndash;item&quot;&gt;<br>
+                &lt;a href=&quot;./index.php?page=new_employee&quot; class=&quot;nav&ndash;link nav&ndash;new_employee tree&ndash;item&quot;&gt;<br>
+                  &lt;i class=&quot;fas fa&ndash;angle&ndash;right nav&ndash;icon&quot;&gt;&lt;/i&gt;<br>
+                  &lt;p&gt;Add New&lt;/p&gt;<br>
+                &lt;/a&gt;<br>
+              &lt;/li&gt;<br>
+              &lt;li class=&quot;nav&ndash;item&quot;&gt;<br>
+                &lt;a href=&quot;./index.php?page=employee_list&quot; class=&quot;nav&ndash;link nav&ndash;employee_list tree&ndash;item&quot;&gt;<br>
+                  &lt;i class=&quot;fas fa&ndash;angle&ndash;right nav&ndash;icon&quot;&gt;&lt;/i&gt;<br>
+                  &lt;p&gt;List&lt;/p&gt;<br>
+                &lt;/a&gt;<br>
+              &lt;/li&gt;<br>
+            &lt;/ul&gt;<br>
+          &lt;/li&gt;<br>
+          &lt;li class=&quot;nav&ndash;item&quot;&gt;<br>
+            &lt;a href=&quot;#&quot; class=&quot;nav&ndash;link nav&ndash;edit_evaluator&quot;&gt;<br>
+              &lt;i class=&quot;nav&ndash;icon fas fa&ndash;user&ndash;secret&quot;&gt;&lt;/i&gt;<br>
+              &lt;p&gt;<br>
+                Evaluator<br>
+                &lt;i class=&quot;right fas fa&ndash;angle&ndash;left&quot;&gt;&lt;/i&gt;<br>
+              &lt;/p&gt;<br>
+            &lt;/a&gt;<br>
+            &lt;ul class=&quot;nav nav&ndash;treeview&quot;&gt;<br>
+              &lt;li class=&quot;nav&ndash;item&quot;&gt;<br>
+                &lt;a href=&quot;./index.php?page=new_evaluator&quot; class=&quot;nav&ndash;link nav&ndash;new_evaluator tree&ndash;item&quot;&gt;<br>
+                  &lt;i class=&quot;fas fa&ndash;angle&ndash;right nav&ndash;icon&quot;&gt;&lt;/i&gt;<br>
+                  &lt;p&gt;Add New&lt;/p&gt;<br>
+                &lt;/a&gt;<br>
+              &lt;/li&gt;<br>
+              &lt;li class=&quot;nav&ndash;item&quot;&gt;<br>
+                &lt;a href=&quot;./index.php?page=evaluator_list&quot; class=&quot;nav&ndash;link nav&ndash;evaluator_list tree&ndash;item&quot;&gt;<br>
+                  &lt;i class=&quot;fas fa&ndash;angle&ndash;right nav&ndash;icon&quot;&gt;&lt;/i&gt;<br>
+                  &lt;p&gt;List&lt;/p&gt;<br>
+                &lt;/a&gt;<br>
+              &lt;/li&gt;<br>
+            &lt;/ul&gt;<br>
+          &lt;/li&gt;<br>
+          &lt;li class=&quot;nav&ndash;item&quot;&gt;<br>
+            &lt;a href=&quot;#&quot; class=&quot;nav&ndash;link nav&ndash;edit_user&quot;&gt;<br>
+              &lt;i class=&quot;nav&ndash;icon fas fa&ndash;users&quot;&gt;&lt;/i&gt;<br>
+              &lt;p&gt;<br>
+                Users<br>
+                &lt;i class=&quot;right fas fa&ndash;angle&ndash;left&quot;&gt;&lt;/i&gt;<br>
+              &lt;/p&gt;<br>
+            &lt;/a&gt;<br>
+            &lt;ul class=&quot;nav nav&ndash;treeview&quot;&gt;<br>
+              &lt;li class=&quot;nav&ndash;item&quot;&gt;<br>
+                &lt;a href=&quot;./index.php?page=new_user&quot; class=&quot;nav&ndash;link nav&ndash;new_user tree&ndash;item&quot;&gt;<br>
+                  &lt;i class=&quot;fas fa&ndash;angle&ndash;right nav&ndash;icon&quot;&gt;&lt;/i&gt;<br>
+                  &lt;p&gt;Add New&lt;/p&gt;<br>
+                &lt;/a&gt;<br>
+              &lt;/li&gt;<br>
+              &lt;li class=&quot;nav&ndash;item&quot;&gt;<br>
+                &lt;a href=&quot;./index.php?page=user_list&quot; class=&quot;nav&ndash;link nav&ndash;user_list tree&ndash;item&quot;&gt;<br>
+                  &lt;i class=&quot;fas fa&ndash;angle&ndash;right nav&ndash;icon&quot;&gt;&lt;/i&gt;<br>
+                  &lt;p&gt;List&lt;/p&gt;<br>
+                &lt;/a&gt;<br>
+              &lt;/li&gt;<br>
+            &lt;/ul&gt;<br>
+          &lt;/li&gt;<br>
+        &lt;?php endif; ?&gt;<br>
+        &lt;/ul&gt;<br>
+      &lt;/nav&gt;<br>
+    &lt;/div&gt;<br>
+  &lt;/aside&gt;<br>
+  &lt;script&gt;<br>
+  	$(document).ready(function(){<br>
+      var page = &#39;&lt;?php echo isset($_GET[&#39;page&#39;]) ? $_GET[&#39;page&#39;] : &#39;home&#39; ?&gt;&#39;;<br>
+  		var s = &#39;&lt;?php echo isset($_GET[&#39;s&#39;]) ? $_GET[&#39;s&#39;] : &#39;&#39; ?&gt;&#39;;<br>
+      if(s!=&#39;&#39;)<br>
+        page = page+&#39;_&#39;+s;<br>
+  		if($(&#39;.nav&ndash;link.nav&ndash;&#39;+page).length &gt; 0){<br>
+             $(&#39;.nav&ndash;link.nav&ndash;&#39;+page).addClass(&#39;active&#39;)<br>
+  			if($(&#39;.nav&ndash;link.nav&ndash;&#39;+page).hasClass(&#39;tree&ndash;item&#39;) == true){<br>
+            $(&#39;.nav&ndash;link.nav&ndash;&#39;+page).closest(&#39;.nav&ndash;treeview&#39;).siblings(&#39;a&#39;).addClass(&#39;active&#39;)<br>
+  				$(&#39;.nav&ndash;link.nav&ndash;&#39;+page).closest(&#39;.nav&ndash;treeview&#39;).parent().addClass(&#39;menu&ndash;open&#39;)<br>
+  			}<br>
+        if($(&#39;.nav&ndash;link.nav&ndash;&#39;+page).hasClass(&#39;nav&ndash;is&ndash;tree&#39;) == true){<br>
+          $(&#39;.nav&ndash;link.nav&ndash;&#39;+page).parent().addClass(&#39;menu&ndash;open&#39;)<br>
+        }<br>
+<br>
+  		}<br>
+     <br>
+  	})<br>
+  &lt;/script&gt;</body></html>

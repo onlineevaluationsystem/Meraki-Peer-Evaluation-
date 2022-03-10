@@ -1,0 +1,552 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;?php<br>
+session_start();<br>
+ini_set(&#39;display_errors&#39;, 1);<br>
+Class Action {<br>
+&nbsp;&nbsp;&nbsp;private $db;<br>
+<br>
+&nbsp;&nbsp;&nbsp;public function __construct() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ob_start();<br>
+   	include &#39;db_connect.php&#39;;<br>
+    <br>
+    $this&ndash;&gt;db = $conn;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function __destruct() {<br>
+&nbsp;&nbsp;&nbsp;    $this&ndash;&gt;db&ndash;&gt;close();<br>
+&nbsp;&nbsp;&nbsp;    ob_end_flush();<br>
+&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;function login(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$type = array(&quot;employee_list&quot;,&quot;evaluator_list&quot;,&quot;users&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$qry = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT *,concat(firstname,&#39; &#39;,lastname) as name FROM {$type[$login]} where email = &#39;&quot;.$email.&quot;&#39; and password = &#39;&quot;.md5($password).&quot;&#39;  &quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($qry&ndash;&gt;num_rows &gt; 0){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach ($qry&ndash;&gt;fetch_array() as $key =&gt; $value) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($key != &#39;password&#39; &amp;&amp; !is_numeric($key))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$_SESSION[&#39;login_&#39;.$key] = $value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$_SESSION[&#39;login_type&#39;] = $login;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function logout(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;session_destroy();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach ($_SESSION as $key =&gt; $value) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unset($_SESSION[$key]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;header(&quot;location:login.php&quot;);<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function login2(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$qry = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT *,concat(lastname,&#39;, &#39;,firstname,&#39; &#39;,middlename) as name FROM students where student_code = &#39;&quot;.$student_code.&quot;&#39; &quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($qry&ndash;&gt;num_rows &gt; 0){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach ($qry&ndash;&gt;fetch_array() as $key =&gt; $value) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($key != &#39;password&#39; &amp;&amp; !is_numeric($key))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$_SESSION[&#39;rs_&#39;.$key] = $value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 3;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function save_user(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($_POST as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!in_array($k, array(&#39;id&#39;,&#39;cpass&#39;,&#39;password&#39;)) &amp;&amp; !is_numeric($k)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($data)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot; $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!empty($password)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, password=md5(&#39;$password&#39;) &quot;;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$check = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT * FROM users where email =&#39;$email&#39; &quot;.(!empty($id) ? &quot; and id != {$id} &quot; : &#39;&#39;))&ndash;&gt;num_rows;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($check &gt; 0){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(isset($_FILES[&#39;img&#39;]) &amp;&amp; $_FILES[&#39;img&#39;][&#39;tmp_name&#39;] != &#39;&#39;){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$fname = strtotime(date(&#39;y&ndash;m&ndash;d H:i&#39;)).&#39;_&#39;.$_FILES[&#39;img&#39;][&#39;name&#39;];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$move = move_uploaded_file($_FILES[&#39;img&#39;][&#39;tmp_name&#39;],&#39;assets/uploads/&#39;. $fname);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, avatar = &#39;$fname&#39; &quot;;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($id)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!isset($_FILES[&#39;img&#39;]) || (isset($_FILES[&#39;img&#39;]) &amp;&amp; $_FILES[&#39;img&#39;][&#39;tmp_name&#39;] == &#39;&#39;)){	<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, avatar = &#39;no&ndash;image&ndash;available.png&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;INSERT INTO users set $data&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;UPDATE users set $data where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($save){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function signup(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($_POST as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!in_array($k, array(&#39;id&#39;,&#39;cpass&#39;)) &amp;&amp; !is_numeric($k)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($k ==&#39;password&#39;){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($v))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$v = md5($v);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($data)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot; $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$check = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT * FROM users where email =&#39;$email&#39; &quot;.(!empty($id) ? &quot; and id != {$id} &quot; : &#39;&#39;))&ndash;&gt;num_rows;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($check &gt; 0){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(isset($_FILES[&#39;img&#39;]) &amp;&amp; $_FILES[&#39;img&#39;][&#39;tmp_name&#39;] != &#39;&#39;){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$fname = strtotime(date(&#39;y&ndash;m&ndash;d H:i&#39;)).&#39;_&#39;.$_FILES[&#39;img&#39;][&#39;name&#39;];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$move = move_uploaded_file($_FILES[&#39;img&#39;][&#39;tmp_name&#39;],&#39;assets/uploads/&#39;. $fname);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, avatar = &#39;$fname&#39; &quot;;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($id)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!isset($_FILES[&#39;img&#39;]) || (isset($_FILES[&#39;img&#39;]) &amp;&amp; $_FILES[&#39;img&#39;][&#39;tmp_name&#39;] == &#39;&#39;)){	<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, avatar = &#39;no&ndash;image&ndash;available.png&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;INSERT INTO users set $data&quot;);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;UPDATE users set $data where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($save){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($id))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$id = $this&ndash;&gt;db&ndash;&gt;insert_id;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach ($_POST as $key =&gt; $value) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!in_array($key, array(&#39;id&#39;,&#39;cpass&#39;,&#39;password&#39;)) &amp;&amp; !is_numeric($key))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$_SESSION[&#39;login_&#39;.$key] = $value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$_SESSION[&#39;login_id&#39;] = $id;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(isset($_FILES[&#39;img&#39;]) &amp;&amp; !empty($_FILES[&#39;img&#39;][&#39;tmp_name&#39;]))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$_SESSION[&#39;login_avatar&#39;] = $fname;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;function update_user(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($_POST as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!in_array($k, array(&#39;id&#39;,&#39;cpass&#39;,&#39;table&#39;,&#39;password&#39;)) &amp;&amp; !is_numeric($k)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($data)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot; $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$type = array(&quot;employee_list&quot;,&quot;evaluator_list&quot;,&quot;users&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$check = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT * FROM {$type[$_SESSION[&#39;login_type&#39;]]} where email =&#39;$email&#39; &quot;.(!empty($id) ? &quot; and id != {$id} &quot; : &#39;&#39;))&ndash;&gt;num_rows;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($check &gt; 0){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(isset($_FILES[&#39;img&#39;]) &amp;&amp; $_FILES[&#39;img&#39;][&#39;tmp_name&#39;] != &#39;&#39;){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$fname = strtotime(date(&#39;y&ndash;m&ndash;d H:i&#39;)).&#39;_&#39;.$_FILES[&#39;img&#39;][&#39;name&#39;];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$move = move_uploaded_file($_FILES[&#39;img&#39;][&#39;tmp_name&#39;],&#39;assets/uploads/&#39;. $fname);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, avatar = &#39;$fname&#39; &quot;;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!empty($password))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot; ,password=md5(&#39;$password&#39;) &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($id)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!isset($_FILES[&#39;img&#39;]) || (isset($_FILES[&#39;img&#39;]) &amp;&amp; $_FILES[&#39;img&#39;][&#39;tmp_name&#39;] == &#39;&#39;)){	<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, avatar = &#39;no&ndash;image&ndash;available.png&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;INSERT INTO {$type[$_SESSION[&#39;login_type&#39;]]} set $data&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;UPDATE {$type[$_SESSION[&#39;login_type&#39;]]} set $data where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($save){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach ($_POST as $key =&gt; $value) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($key != &#39;password&#39; &amp;&amp; !is_numeric($key))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$_SESSION[&#39;login_&#39;.$key] = $value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(isset($_FILES[&#39;img&#39;]) &amp;&amp; !empty($_FILES[&#39;img&#39;][&#39;tmp_name&#39;]))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$_SESSION[&#39;login_avatar&#39;] = $fname;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function delete_user(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$delete = $this&ndash;&gt;db&ndash;&gt;query(&quot;DELETE FROM users where id = &quot;.$id);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($delete)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function save_system_settings(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = &#39;&#39;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($_POST as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!is_numeric($k)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($data)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot; $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($_FILES[&#39;cover&#39;][&#39;tmp_name&#39;] != &#39;&#39;){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$fname = strtotime(date(&#39;y&ndash;m&ndash;d H:i&#39;)).&#39;_&#39;.$_FILES[&#39;cover&#39;][&#39;name&#39;];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$move = move_uploaded_file($_FILES[&#39;cover&#39;][&#39;tmp_name&#39;],&#39;../assets/uploads/&#39;. $fname);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, cover_img = &#39;$fname&#39; &quot;;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$chk = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT * FROM system_settings&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($chk&ndash;&gt;num_rows &gt; 0){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;UPDATE system_settings set $data where id =&quot;.$chk&ndash;&gt;fetch_array()[&#39;id&#39;]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;INSERT INTO system_settings set $data&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($save){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($_POST as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!is_numeric($k)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$_SESSION[&#39;system&#39;][$k] = $v;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($_FILES[&#39;cover&#39;][&#39;tmp_name&#39;] != &#39;&#39;){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$_SESSION[&#39;system&#39;][&#39;cover_img&#39;] = $fname;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function save_image(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_FILES[&#39;file&#39;]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!empty($tmp_name)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$fname = strtotime(date(&quot;Y&ndash;m&ndash;d H:i&quot;)).&quot;_&quot;.(str_replace(&quot; &quot;,&quot;&ndash;&quot;,$name));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$move = move_uploaded_file($tmp_name,&#39;assets/uploads/&#39;. $fname);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$protocol = strtolower(substr($_SERVER[&quot;SERVER_PROTOCOL&quot;],0,5))==&#39;https&#39;?&#39;https&#39;:&#39;http&#39;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$hostName = $_SERVER[&#39;HTTP_HOST&#39;];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$path =explode(&#39;/&#39;,$_SERVER[&#39;PHP_SELF&#39;]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$currentPath = &#39;/&#39;.$path[1]; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($move){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return $protocol.&#39;://&#39;.$hostName.$currentPath.&#39;/assets/uploads/&#39;.$fname;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function save_department(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($_POST as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!in_array($k, array(&#39;id&#39;,&#39;user_ids&#39;)) &amp;&amp; !is_numeric($k)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($data)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot; $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$chk = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT * FROM department_list where department = &#39;$department&#39; and id != &#39;{$id}&#39; &quot;)&ndash;&gt;num_rows;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($chk &gt; 0){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(isset($user_ids)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, user_ids=&#39;&quot;.implode(&#39;,&#39;,$user_ids).&quot;&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($id)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;INSERT INTO department_list set $data&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;UPDATE department_list set $data where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($save){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function delete_department(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$delete = $this&ndash;&gt;db&ndash;&gt;query(&quot;DELETE FROM department_list where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($delete){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function save_designation(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($_POST as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!in_array($k, array(&#39;id&#39;,&#39;user_ids&#39;)) &amp;&amp; !is_numeric($k)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($data)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot; $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$chk = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT * FROM designation_list where designation = &#39;$designation&#39; and id != &#39;{$id}&#39; &quot;)&ndash;&gt;num_rows;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($chk &gt; 0){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(isset($user_ids)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, user_ids=&#39;&quot;.implode(&#39;,&#39;,$user_ids).&quot;&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($id)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;INSERT INTO designation_list set $data&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;UPDATE designation_list set $data where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($save){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function delete_designation(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$delete = $this&ndash;&gt;db&ndash;&gt;query(&quot;DELETE FROM designation_list where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($delete){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function save_employee(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($_POST as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!in_array($k, array(&#39;id&#39;,&#39;cpass&#39;,&#39;password&#39;)) &amp;&amp; !is_numeric($k)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($data)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot; $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!empty($password)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, password=md5(&#39;$password&#39;) &quot;;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$check = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT * FROM employee_list where email =&#39;$email&#39; &quot;.(!empty($id) ? &quot; and id != {$id} &quot; : &#39;&#39;))&ndash;&gt;num_rows;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($check &gt; 0){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(isset($_FILES[&#39;img&#39;]) &amp;&amp; $_FILES[&#39;img&#39;][&#39;tmp_name&#39;] != &#39;&#39;){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$fname = strtotime(date(&#39;y&ndash;m&ndash;d H:i&#39;)).&#39;_&#39;.$_FILES[&#39;img&#39;][&#39;name&#39;];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$move = move_uploaded_file($_FILES[&#39;img&#39;][&#39;tmp_name&#39;],&#39;assets/uploads/&#39;. $fname);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, avatar = &#39;$fname&#39; &quot;;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($id)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!isset($_FILES[&#39;img&#39;]) || (isset($_FILES[&#39;img&#39;]) &amp;&amp; $_FILES[&#39;img&#39;][&#39;tmp_name&#39;] == &#39;&#39;)){	<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, avatar = &#39;no&ndash;image&ndash;available.png&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;INSERT INTO employee_list set $data&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;UPDATE employee_list set $data where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($save){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function delete_employee(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$delete = $this&ndash;&gt;db&ndash;&gt;query(&quot;DELETE FROM employee_list where id = &quot;.$id);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($delete)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function save_evaluator(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($_POST as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!in_array($k, array(&#39;id&#39;,&#39;cpass&#39;,&#39;password&#39;)) &amp;&amp; !is_numeric($k)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($data)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot; $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!empty($password)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, password=md5(&#39;$password&#39;) &quot;;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$check = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT * FROM evaluator_list where email =&#39;$email&#39; &quot;.(!empty($id) ? &quot; and id != {$id} &quot; : &#39;&#39;))&ndash;&gt;num_rows;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($check &gt; 0){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(isset($_FILES[&#39;img&#39;]) &amp;&amp; $_FILES[&#39;img&#39;][&#39;tmp_name&#39;] != &#39;&#39;){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$fname = strtotime(date(&#39;y&ndash;m&ndash;d H:i&#39;)).&#39;_&#39;.$_FILES[&#39;img&#39;][&#39;name&#39;];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$move = move_uploaded_file($_FILES[&#39;img&#39;][&#39;tmp_name&#39;],&#39;assets/uploads/&#39;. $fname);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, avatar = &#39;$fname&#39; &quot;;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($id)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!isset($_FILES[&#39;img&#39;]) || (isset($_FILES[&#39;img&#39;]) &amp;&amp; $_FILES[&#39;img&#39;][&#39;tmp_name&#39;] == &#39;&#39;)){	<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, avatar = &#39;no&ndash;image&ndash;available.png&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;INSERT INTO evaluator_list set $data&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;UPDATE evaluator_list set $data where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($save){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function delete_evaluator(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$delete = $this&ndash;&gt;db&ndash;&gt;query(&quot;DELETE FROM evaluator_list where id = &quot;.$id);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($delete)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function save_task(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($_POST as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!in_array($k, array(&#39;id&#39;)) &amp;&amp; !is_numeric($k)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($k == &#39;description&#39;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$v = htmlentities(str_replace(&quot;&#39;&quot;,&quot;&amp;#x2019;&quot;,$v));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($data)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot; $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($id)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;INSERT INTO task_list set $data&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;UPDATE task_list set $data where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($save){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function delete_task(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$delete = $this&ndash;&gt;db&ndash;&gt;query(&quot;DELETE FROM task_list where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($delete){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function save_progress(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($_POST as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!in_array($k, array(&#39;id&#39;)) &amp;&amp; !is_numeric($k)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($k == &#39;progress&#39;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$v = htmlentities(str_replace(&quot;&#39;&quot;,&quot;&amp;#x2019;&quot;,$v));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($data)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot; $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!isset($is_complete))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, is_complete=0 &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($id)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;INSERT INTO task_progress set $data&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;UPDATE task_progress set $data where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($save){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!isset($is_complete))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this&ndash;&gt;db&ndash;&gt;query(&quot;UPDATE task_list set status = 1 where id = $task_id &quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this&ndash;&gt;db&ndash;&gt;query(&quot;UPDATE task_list set status = 2 where id = $task_id &quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function delete_progress(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$delete = $this&ndash;&gt;db&ndash;&gt;query(&quot;DELETE FROM task_progress where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($delete){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function save_evaluation(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = &quot;&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($_POST as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!in_array($k, array(&#39;id&#39;)) &amp;&amp; !is_numeric($k)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($data)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot; $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, $k=&#39;$v&#39; &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data .= &quot;, evaluator_id = {$_SESSION[&#39;login_id&#39;]} &quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(empty($id)){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;INSERT INTO ratings set $data&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$save = $this&ndash;&gt;db&ndash;&gt;query(&quot;UPDATE ratings set $data where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($save){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!isset($is_complete))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function delete_evaluation(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$delete = $this&ndash;&gt;db&ndash;&gt;query(&quot;DELETE FROM ratings where id = $id&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if($delete){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function get_emp_tasks(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(!isset($task_id))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$get = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT * FROM task_list where employee_id = $employee_id and status = 2 and id not in (SELECT task_id FROM ratings) &quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$get = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT * FROM task_list where employee_id = $employee_id and status = 2 and id not in (SELECT task_id FROM ratings where task_id !=&#39;$task_id&#39;) &quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = array();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while($row=$get&ndash;&gt;fetch_assoc()){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data[] = $row;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return json_encode($data);<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function get_progress(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$get = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT p.*,concat(u.firstname,&#39; &#39;,u.lastname) as uname,u.avatar FROM task_progress p inner join task_list t on t.id = p.task_id inner join employee_list u on u.id = t.employee_id where p.task_id = $task_id order by unix_timestamp(p.date_created) desc &quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = array();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while($row=$get&ndash;&gt;fetch_assoc()){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$row[&#39;uname&#39;] = ucwords($row[&#39;uname&#39;]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$row[&#39;progress&#39;] = html_entity_decode($row[&#39;progress&#39;]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$row[&#39;date_created&#39;] = date(&quot;M d, Y&quot;,strtotime($row[&#39;date_created&#39;]));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data[] = $row;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return json_encode($data);<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;function get_report(){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extract($_POST);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data = array();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$get = $this&ndash;&gt;db&ndash;&gt;query(&quot;SELECT t.*,p.name as ticket_for FROM ticket_list t inner join pricing p on p.id = t.pricing_id where date(t.date_created) between &#39;$date_from&#39; and &#39;$date_to&#39; order by unix_timestamp(t.date_created) desc &quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while($row= $get&ndash;&gt;fetch_assoc()){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$row[&#39;date_created&#39;] = date(&quot;M d, Y&quot;,strtotime($row[&#39;date_created&#39;]));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$row[&#39;name&#39;] = ucwords($row[&#39;name&#39;]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$row[&#39;adult_price&#39;] = number_format($row[&#39;adult_price&#39;],2);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$row[&#39;child_price&#39;] = number_format($row[&#39;child_price&#39;],2);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$row[&#39;amount&#39;] = number_format($row[&#39;amount&#39;],2);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$data[]=$row;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return json_encode($data);<br>
+<br>
+&nbsp;&nbsp;&nbsp;}<br>
+}</body></html>

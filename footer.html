@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;!&ndash;&ndash; SweetAlert2 &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/plugins/sweetalert2/sweetalert2.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;!&ndash;&ndash; Toastr &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/plugins/toastr/toastr.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;!&ndash;&ndash; Switch Toggle &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/plugins/bootstrap4&ndash;toggle/js/bootstrap4&ndash;toggle.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;!&ndash;&ndash; Select2 &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/plugins/select2/js/select2.full.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;!&ndash;&ndash; Summernote &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/plugins/summernote/summernote&ndash;bs4.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;!&ndash;&ndash; dropzonejs &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/plugins/dropzone/min/dropzone.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/bs&ndash;custom&ndash;file&ndash;input/bs&ndash;custom&ndash;file&ndash;input.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;!&ndash;&ndash; DateTimePicker &ndash;&ndash;&gt;<br>
+  &lt;script src=&quot;assets/dist/js/jquery.datetimepicker.full.min.js&quot;&gt;&lt;/script&gt;<br>
+  &lt;!&ndash;&ndash; Bootstrap Switch &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/plugins/bootstrap&ndash;switch/js/bootstrap&ndash;switch.min.js&quot;&gt;&lt;/script&gt;<br>
+ &lt;!&ndash;&ndash; MOMENT &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/plugins/moment/moment.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script&gt;<br>
+&nbsp;&nbsp;&nbsp;$(document).ready(function(){<br>
+&nbsp;&nbsp;&nbsp;  $(&#39;.select2&#39;).select2({<br>
+&nbsp;&nbsp;&nbsp;    placeholder:&quot;Please select here&quot;,<br>
+&nbsp;&nbsp;&nbsp;    width: &quot;100%&quot;<br>
+&nbsp;&nbsp;&nbsp;  });<br>
+  })<br>
+&nbsp;&nbsp;&nbsp; window.start_load = function(){<br>
+&nbsp;&nbsp;&nbsp;    $(&#39;body&#39;).prepend(&#39;&lt;div id=&quot;preloader2&quot;&gt;&lt;/div&gt;&#39;)<br>
+&nbsp;&nbsp;&nbsp;  }<br>
+&nbsp;&nbsp;&nbsp;  window.end_load = function(){<br>
+&nbsp;&nbsp;&nbsp;    $(&#39;#preloader2&#39;).fadeOut(&#39;fast&#39;, function() {<br>
+&nbsp;&nbsp;&nbsp;        $(this).remove();<br>
+&nbsp;&nbsp;&nbsp;      })<br>
+&nbsp;&nbsp;&nbsp;  }<br>
+&nbsp;&nbsp;&nbsp; window.viewer_modal = function($src = &#39;&#39;){<br>
+&nbsp;&nbsp;&nbsp;    start_load()<br>
+&nbsp;&nbsp;&nbsp;    var t = $src.split(&#39;.&#39;)<br>
+&nbsp;&nbsp;&nbsp;    t = t[1]<br>
+&nbsp;&nbsp;&nbsp;    if(t ==&#39;mp4&#39;){<br>
+&nbsp;&nbsp;&nbsp;      var view = $(&quot;&lt;video src=&#39;&quot;+$src+&quot;&#39; controls autoplay&gt;&lt;/video&gt;&quot;)<br>
+&nbsp;&nbsp;&nbsp;    }else{<br>
+&nbsp;&nbsp;&nbsp;      var view = $(&quot;&lt;img src=&#39;&quot;+$src+&quot;&#39; /&gt;&quot;)<br>
+&nbsp;&nbsp;&nbsp;    }<br>
+&nbsp;&nbsp;&nbsp;    $(&#39;#viewer_modal .modal&ndash;content video,#viewer_modal .modal&ndash;content img&#39;).remove()<br>
+&nbsp;&nbsp;&nbsp;    $(&#39;#viewer_modal .modal&ndash;content&#39;).append(view)<br>
+&nbsp;&nbsp;&nbsp;    $(&#39;#viewer_modal&#39;).modal({<br>
+&nbsp;&nbsp;&nbsp;            show:true,<br>
+&nbsp;&nbsp;&nbsp;            backdrop:&#39;static&#39;,<br>
+&nbsp;&nbsp;&nbsp;            keyboard:false,<br>
+&nbsp;&nbsp;&nbsp;            focus:true<br>
+&nbsp;&nbsp;&nbsp;          })<br>
+&nbsp;&nbsp;&nbsp;          end_load()  <br>
+<br>
+&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;  window.uni_modal = function($title = &#39;&#39; , $url=&#39;&#39;,$size=&quot;&quot;){<br>
+&nbsp;&nbsp;&nbsp;      start_load()<br>
+&nbsp;&nbsp;&nbsp;      $.ajax({<br>
+&nbsp;&nbsp;&nbsp;          url:$url,<br>
+&nbsp;&nbsp;&nbsp;          error:err=&gt;{<br>
+&nbsp;&nbsp;&nbsp;              console.log()<br>
+&nbsp;&nbsp;&nbsp;              alert(&quot;An error occured&quot;)<br>
+&nbsp;&nbsp;&nbsp;          },<br>
+&nbsp;&nbsp;&nbsp;          success:function(resp){<br>
+&nbsp;&nbsp;&nbsp;              if(resp){<br>
+&nbsp;&nbsp;&nbsp;                  $(&#39;#uni_modal .modal&ndash;title&#39;).html($title)<br>
+&nbsp;&nbsp;&nbsp;                  $(&#39;#uni_modal .modal&ndash;body&#39;).html(resp)<br>
+&nbsp;&nbsp;&nbsp;                  if($size != &#39;&#39;){<br>
+&nbsp;&nbsp;&nbsp;                      $(&#39;#uni_modal .modal&ndash;dialog&#39;).addClass($size)<br>
+&nbsp;&nbsp;&nbsp;                  }else{<br>
+&nbsp;&nbsp;&nbsp;                      $(&#39;#uni_modal .modal&ndash;dialog&#39;).removeAttr(&quot;class&quot;).addClass(&quot;modal&ndash;dialog modal&ndash;md&quot;)<br>
+&nbsp;&nbsp;&nbsp;                  }<br>
+&nbsp;&nbsp;&nbsp;                  $(&#39;#uni_modal&#39;).modal({<br>
+&nbsp;&nbsp;&nbsp;                    show:true,<br>
+&nbsp;&nbsp;&nbsp;                    backdrop:&#39;static&#39;,<br>
+&nbsp;&nbsp;&nbsp;                    keyboard:false,<br>
+&nbsp;&nbsp;&nbsp;                    focus:true<br>
+&nbsp;&nbsp;&nbsp;                  })<br>
+&nbsp;&nbsp;&nbsp;                  end_load()<br>
+&nbsp;&nbsp;&nbsp;              }<br>
+&nbsp;&nbsp;&nbsp;          }<br>
+&nbsp;&nbsp;&nbsp;      })<br>
+&nbsp;&nbsp;&nbsp;  }<br>
+&nbsp;&nbsp;&nbsp;  window._conf = function($msg=&#39;&#39;,$func=&#39;&#39;,$params = []){<br>
+&nbsp;&nbsp;&nbsp;     $(&#39;#confirm_modal #confirm&#39;).attr(&#39;onclick&#39;,$func+&quot;(&quot;+$params.join(&#39;,&#39;)+&quot;)&quot;)<br>
+&nbsp;&nbsp;&nbsp;     $(&#39;#confirm_modal .modal&ndash;body&#39;).html($msg)<br>
+&nbsp;&nbsp;&nbsp;     $(&#39;#confirm_modal&#39;).modal(&#39;show&#39;)<br>
+&nbsp;&nbsp;&nbsp;  }<br>
+&nbsp;&nbsp;&nbsp;   window.alert_toast= function($msg = &#39;TEST&#39;,$bg = &#39;success&#39; ,$pos=&#39;&#39;){<br>
+&nbsp;&nbsp;&nbsp;   	 var Toast = Swal.mixin({<br>
+&nbsp;&nbsp;&nbsp;      toast: true,<br>
+&nbsp;&nbsp;&nbsp;      position: $pos || &#39;top&ndash;end&#39;,<br>
+&nbsp;&nbsp;&nbsp;      showConfirmButton: false,<br>
+&nbsp;&nbsp;&nbsp;      timer: 5000<br>
+&nbsp;&nbsp;&nbsp;    });<br>
+&nbsp;&nbsp;&nbsp;      Toast.fire({<br>
+&nbsp;&nbsp;&nbsp;        icon: $bg,<br>
+&nbsp;&nbsp;&nbsp;        title: $msg<br>
+&nbsp;&nbsp;&nbsp;      })<br>
+&nbsp;&nbsp;&nbsp;  }<br>
+$(function () {<br>
+  bsCustomFileInput.init();<br>
+<br>
+    $(&#39;.summernote&#39;).summernote({<br>
+        height: 300,<br>
+        toolbar: [<br>
+            [ &#39;style&#39;, [ &#39;style&#39; ] ],<br>
+            [ &#39;font&#39;, [ &#39;bold&#39;, &#39;italic&#39;, &#39;underline&#39;, &#39;strikethrough&#39;, &#39;superscript&#39;, &#39;subscript&#39;, &#39;clear&#39;] ],<br>
+            [ &#39;fontname&#39;, [ &#39;fontname&#39; ] ],<br>
+            [ &#39;fontsize&#39;, [ &#39;fontsize&#39; ] ],<br>
+            [ &#39;color&#39;, [ &#39;color&#39; ] ],<br>
+            [ &#39;para&#39;, [ &#39;ol&#39;, &#39;ul&#39;, &#39;paragraph&#39;, &#39;height&#39; ] ],<br>
+            [ &#39;table&#39;, [ &#39;table&#39; ] ],<br>
+            [ &#39;view&#39;, [ &#39;undo&#39;, &#39;redo&#39;, &#39;fullscreen&#39;, &#39;codeview&#39;, &#39;help&#39; ] ]<br>
+        ]<br>
+    })<br>
+<br>
+     $(&#39;.datetimepicker&#39;).datetimepicker({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  format:&#39;Y/m/d H:i&#39;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
+    <br>
+<br>
+  })<br>
+ $(&quot;.switch&ndash;toggle&quot;).bootstrapToggle();<br>
+$(&#39;.number&#39;).on(&#39;input keyup keypress&#39;,function(){<br>
+        var val = $(this).val()<br>
+        val = val.replace(/[^0&ndash;9]/, &#39;&#39;);<br>
+        val = val.replace(/,/g, &#39;&#39;);<br>
+        val = val &gt; 0 ? parseFloat(val).toLocaleString(&quot;en&ndash;US&quot;) : 0;<br>
+        $(this).val(val)<br>
+    })<br>
+&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/bootstrap/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;!&ndash;&ndash; overlayScrollbars &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;!&ndash;&ndash; AdminLTE App &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/dist/js/adminlte.js&quot;&gt;&lt;/script&gt;<br>
+<br>
+&lt;!&ndash;&ndash; PAGE assets/plugins &ndash;&ndash;&gt;<br>
+&lt;!&ndash;&ndash; jQuery Mapael &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/plugins/jquery&ndash;mousewheel/jquery.mousewheel.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/raphael/raphael.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/jquery&ndash;mapael/jquery.mapael.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/jquery&ndash;mapael/maps/usa_states.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;!&ndash;&ndash; ChartJS &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/plugins/chart.js/Chart.min.js&quot;&gt;&lt;/script&gt;<br>
+<br>
+&lt;!&ndash;&ndash; AdminLTE for demo purposes &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/dist/js/demo.js&quot;&gt;&lt;/script&gt;<br>
+&lt;!&ndash;&ndash; AdminLTE dashboard demo (This is only for demo purposes) &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/dist/js/pages/dashboard2.js&quot;&gt;&lt;/script&gt;<br>
+&lt;!&ndash;&ndash; DataTables  &amp; Plugins &ndash;&ndash;&gt;<br>
+&lt;script src=&quot;assets/plugins/datatables/jquery.dataTables.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/datatables&ndash;bs4/js/dataTables.bootstrap4.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/datatables&ndash;responsive/js/dataTables.responsive.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/datatables&ndash;responsive/js/responsive.bootstrap4.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/datatables&ndash;buttons/js/dataTables.buttons.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/datatables&ndash;buttons/js/buttons.bootstrap4.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/jszip/jszip.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/pdfmake/pdfmake.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/pdfmake/vfs_fonts.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/datatables&ndash;buttons/js/buttons.html5.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/datatables&ndash;buttons/js/buttons.print.min.js&quot;&gt;&lt;/script&gt;<br>
+&lt;script src=&quot;assets/plugins/datatables&ndash;buttons/js/buttons.colVis.min.js&quot;&gt;&lt;/script&gt;<br>
+</body></html>

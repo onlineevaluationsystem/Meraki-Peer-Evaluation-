@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;?php<br>
+include &#39;db_connect.php&#39;;<br>
+$qry = $conn&ndash;&gt;query(&quot;SELECT * FROM evaluator_list where id = &quot;.$_GET[&#39;id&#39;])&ndash;&gt;fetch_array();<br>
+foreach($qry as $k =&gt; $v){<br>
+&nbsp;&nbsp;&nbsp;$$k = $v;<br>
+}<br>
+include &#39;new_evaluator.php&#39;;<br>
+?&gt;</body></html>

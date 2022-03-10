@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;?php include(&#39;db_connect.php&#39;) ?&gt;<br>
+&lt;?php<br>
+$twhere =&quot;&quot;;<br>
+if($_SESSION[&#39;login_type&#39;] != 1)<br>
+  $twhere = &quot;  &quot;;<br>
+?&gt;<br>
+&lt;!&ndash;&ndash; Info boxes &ndash;&ndash;&gt;<br>
+&lt;?php if($_SESSION[&#39;login_type&#39;] == 2): ?&gt;<br>
+        &lt;div class=&quot;row&quot;&gt;<br>
+          &lt;div class=&quot;col&ndash;12 col&ndash;sm&ndash;6 col&ndash;md&ndash;4&quot;&gt;<br>
+            &lt;div class=&quot;small&ndash;box bg&ndash;light shadow&ndash;sm border&quot;&gt;<br>
+              &lt;div class=&quot;inner&quot;&gt;<br>
+                &lt;h3&gt;&lt;?php echo $conn&ndash;&gt;query(&quot;SELECT * FROM department_list &quot;)&ndash;&gt;num_rows; ?&gt;&lt;/h3&gt;<br>
+<br>
+                &lt;p&gt;Total Departments&lt;/p&gt;<br>
+              &lt;/div&gt;<br>
+              &lt;div class=&quot;icon&quot;&gt;<br>
+                &lt;i class=&quot;fa fa&ndash;th&ndash;list&quot;&gt;&lt;/i&gt;<br>
+              &lt;/div&gt;<br>
+            &lt;/div&gt;<br>
+          &lt;/div&gt;<br>
+           &lt;div class=&quot;col&ndash;12 col&ndash;sm&ndash;6 col&ndash;md&ndash;4&quot;&gt;<br>
+            &lt;div class=&quot;small&ndash;box bg&ndash;light shadow&ndash;sm border&quot;&gt;<br>
+              &lt;div class=&quot;inner&quot;&gt;<br>
+                &lt;h3&gt;&lt;?php echo $conn&ndash;&gt;query(&quot;SELECT * FROM designation_list&quot;)&ndash;&gt;num_rows; ?&gt;&lt;/h3&gt;<br>
+<br>
+                &lt;p&gt;Total Designations&lt;/p&gt;<br>
+              &lt;/div&gt;<br>
+              &lt;div class=&quot;icon&quot;&gt;<br>
+                &lt;i class=&quot;fa fa&ndash;list&ndash;alt&quot;&gt;&lt;/i&gt;<br>
+              &lt;/div&gt;<br>
+            &lt;/div&gt;<br>
+          &lt;/div&gt;<br>
+           &lt;div class=&quot;col&ndash;12 col&ndash;sm&ndash;6 col&ndash;md&ndash;4&quot;&gt;<br>
+            &lt;div class=&quot;small&ndash;box bg&ndash;light shadow&ndash;sm border&quot;&gt;<br>
+              &lt;div class=&quot;inner&quot;&gt;<br>
+                &lt;h3&gt;&lt;?php echo $conn&ndash;&gt;query(&quot;SELECT * FROM users&quot;)&ndash;&gt;num_rows; ?&gt;&lt;/h3&gt;<br>
+<br>
+                &lt;p&gt;Total Users&lt;/p&gt;<br>
+              &lt;/div&gt;<br>
+              &lt;div class=&quot;icon&quot;&gt;<br>
+                &lt;i class=&quot;fa fa&ndash;users&quot;&gt;&lt;/i&gt;<br>
+              &lt;/div&gt;<br>
+            &lt;/div&gt;<br>
+          &lt;/div&gt;<br>
+          &lt;div class=&quot;col&ndash;12 col&ndash;sm&ndash;6 col&ndash;md&ndash;4&quot;&gt;<br>
+            &lt;div class=&quot;small&ndash;box bg&ndash;light shadow&ndash;sm border&quot;&gt;<br>
+              &lt;div class=&quot;inner&quot;&gt;<br>
+                &lt;h3&gt;&lt;?php echo $conn&ndash;&gt;query(&quot;SELECT * FROM employee_list&quot;)&ndash;&gt;num_rows; ?&gt;&lt;/h3&gt;<br>
+<br>
+                &lt;p&gt;Total Employees&lt;/p&gt;<br>
+              &lt;/div&gt;<br>
+              &lt;div class=&quot;icon&quot;&gt;<br>
+                &lt;i class=&quot;fa fa&ndash;user&ndash;friends&quot;&gt;&lt;/i&gt;<br>
+              &lt;/div&gt;<br>
+            &lt;/div&gt;<br>
+          &lt;/div&gt;<br>
+          &lt;div class=&quot;col&ndash;12 col&ndash;sm&ndash;6 col&ndash;md&ndash;4&quot;&gt;<br>
+            &lt;div class=&quot;small&ndash;box bg&ndash;light shadow&ndash;sm border&quot;&gt;<br>
+              &lt;div class=&quot;inner&quot;&gt;<br>
+                &lt;h3&gt;&lt;?php echo $conn&ndash;&gt;query(&quot;SELECT * FROM evaluator_list&quot;)&ndash;&gt;num_rows; ?&gt;&lt;/h3&gt;<br>
+<br>
+                &lt;p&gt;Total Evaluators&lt;/p&gt;<br>
+              &lt;/div&gt;<br>
+              &lt;div class=&quot;icon&quot;&gt;<br>
+                &lt;i class=&quot;fa fa&ndash;user&ndash;secret&quot;&gt;&lt;/i&gt;<br>
+              &lt;/div&gt;<br>
+            &lt;/div&gt;<br>
+          &lt;/div&gt;<br>
+          &lt;div class=&quot;col&ndash;12 col&ndash;sm&ndash;6 col&ndash;md&ndash;4&quot;&gt;<br>
+            &lt;div class=&quot;small&ndash;box bg&ndash;light shadow&ndash;sm border&quot;&gt;<br>
+              &lt;div class=&quot;inner&quot;&gt;<br>
+                &lt;h3&gt;&lt;?php echo $conn&ndash;&gt;query(&quot;SELECT * FROM task_list&quot;)&ndash;&gt;num_rows; ?&gt;&lt;/h3&gt;<br>
+<br>
+                &lt;p&gt;Total Tasks&lt;/p&gt;<br>
+              &lt;/div&gt;<br>
+              &lt;div class=&quot;icon&quot;&gt;<br>
+                &lt;i class=&quot;fa fa&ndash;tasks&quot;&gt;&lt;/i&gt;<br>
+              &lt;/div&gt;<br>
+            &lt;/div&gt;<br>
+          &lt;/div&gt;<br>
+      &lt;/div&gt;<br>
+<br>
+&lt;?php else: ?&gt;<br>
+   &lt;div class=&quot;col&ndash;12&quot;&gt;<br>
+          &lt;div class=&quot;card&quot;&gt;<br>
+            &lt;div class=&quot;card&ndash;body&quot;&gt;<br>
+              Welcome &lt;?php echo $_SESSION[&#39;login_name&#39;] ?&gt;!<br>
+            &lt;/div&gt;<br>
+          &lt;/div&gt;<br>
+      &lt;/div&gt;<br>
+          <br>
+&lt;?php endif; ?&gt;</body></html>

@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+</head>
+<body>
+&lt;head&gt;<br>
+  &lt;meta charset=&quot;utf&ndash;8&quot;&gt;<br>
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device&ndash;width, initial&ndash;scale=1&quot;&gt;<br>
+  &lt;?php <br>
+  date_default_timezone_set(&quot;Asia/Manila&quot;);<br>
+  <br>
+  ob_start();<br>
+  $title = isset($_GET[&#39;page&#39;]) ? ucwords(str_replace(&quot;_&quot;, &#39; &#39;, $_GET[&#39;page&#39;])) : &quot;Home&quot;;<br>
+  ?&gt;<br>
+  &lt;title&gt;&lt;?php echo $title ?&gt; | &lt;?php echo $_SESSION[&#39;system&#39;][&#39;name&#39;] ?&gt;&lt;/title&gt;<br>
+  &lt;?php ob_end_flush() ?&gt;<br>
+<br>
+  &lt;!&ndash;&ndash; Google Font: Source Sans Pro &ndash;&ndash;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;display=fallback&quot;&gt;<br>
+  &lt;!&ndash;&ndash; Font Awesome Icons &ndash;&ndash;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/plugins/fontawesome&ndash;free/css/all.min.css&quot;&gt;<br>
+  &lt;!&ndash;&ndash; overlayScrollbars &ndash;&ndash;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css&quot;&gt;<br>
+    &lt;!&ndash;&ndash; DataTables &ndash;&ndash;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/plugins/datatables&ndash;bs4/css/dataTables.bootstrap4.min.css&quot;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/plugins/datatables&ndash;responsive/css/responsive.bootstrap4.min.css&quot;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/plugins/datatables&ndash;buttons/css/buttons.bootstrap4.min.css&quot;&gt;<br>
+   &lt;!&ndash;&ndash; Select2 &ndash;&ndash;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/plugins/select2/css/select2.min.css&quot;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/plugins/select2&ndash;bootstrap4&ndash;theme/select2&ndash;bootstrap4.min.css&quot;&gt;<br>
+   &lt;!&ndash;&ndash; SweetAlert2 &ndash;&ndash;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/plugins/sweetalert2&ndash;theme&ndash;bootstrap&ndash;4/bootstrap&ndash;4.min.css&quot;&gt;<br>
+  &lt;!&ndash;&ndash; Toastr &ndash;&ndash;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/plugins/toastr/toastr.min.css&quot;&gt;<br>
+  &lt;!&ndash;&ndash; dropzonejs &ndash;&ndash;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/plugins/dropzone/min/dropzone.min.css&quot;&gt;<br>
+  &lt;!&ndash;&ndash; DateTimePicker &ndash;&ndash;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/dist/css/jquery.datetimepicker.min.css&quot;&gt;<br>
+  &lt;!&ndash;&ndash; iCheck for checkboxes and radio inputs &ndash;&ndash;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/plugins/icheck&ndash;bootstrap/icheck&ndash;bootstrap.min.css&quot;&gt;<br>
+  &lt;!&ndash;&ndash; Switch Toggle &ndash;&ndash;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/plugins/bootstrap4&ndash;toggle/css/bootstrap4&ndash;toggle.min.css&quot;&gt;<br>
+  &lt;!&ndash;&ndash; Theme style &ndash;&ndash;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/dist/css/adminlte.min.css&quot;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/dist/css/styles.css&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;script src=&quot;assets/plugins/jquery/jquery.min.js&quot;&gt;&lt;/script&gt;<br>
+  &lt;!&ndash;&ndash; jQuery UI 1.11.4 &ndash;&ndash;&gt;<br>
+  &lt;script src=&quot;assets/plugins/jquery&ndash;ui/jquery&ndash;ui.min.js&quot;&gt;&lt;/script&gt;<br>
+ &lt;!&ndash;&ndash; summernote &ndash;&ndash;&gt;<br>
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;assets/plugins/summernote/summernote&ndash;bs4.min.css&quot;&gt;<br>
+  <br>
+&lt;/head&gt;</body></html>
